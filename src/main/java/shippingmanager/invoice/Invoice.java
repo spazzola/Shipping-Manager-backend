@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.joda.time.DateTime;
 import shippingmanager.company.Company;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,9 +16,9 @@ import java.time.LocalDate;
 public class Invoice {
 
     private Long id;
-    private Long invoiceNumber;
-    private LocalDate issuedDate;
-    private LocalDate paymentDate;
+    private String invoiceNumber;
+    private DateTime issuedDate;
+    private DateTime paymentDate;
     private BigDecimal valueWithTax;
     private BigDecimal valueWithoutTax;
     private Company issuedBy;
