@@ -1,7 +1,7 @@
-package shippingmanager.utility;
+package shippingmanager.utility.plate;
 
 import lombok.*;
-import shippingmanager.order.Order;
+import shippingmanager.utility.driver.Driver;
 
 import javax.persistence.*;
 
@@ -11,17 +11,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "order_drivers")
-public class OrderDriver {
+@Table(name = "plates")
+public class Plate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_driver_id")
+    @Column(name = "plate_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_fk")
-    private Order order;
+    private String plateNumber;
 
     @ManyToOne
     @JoinColumn(name = "driver_fk")

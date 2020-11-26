@@ -1,10 +1,10 @@
-package shippingmanager.utility;
+package shippingmanager.utility.phonenumber;
 
 import lombok.*;
 import shippingmanager.company.Company;
+import shippingmanager.utility.driver.Driver;
 
 import javax.persistence.*;
-
 
 @Getter
 @Setter
@@ -12,20 +12,24 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "bank_accounts")
-public class BankAccount {
+@Table(name = "phone_numbers")
+public class PhoneNumber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bank_account_id")
+    @Column(name = "phone_number_id")
     private Long id;
 
-    private String accountName;
+    private String type;
 
-    private String accountNumber;
+    private String number;
 
     @ManyToOne
     @JoinColumn(name = "company_fk")
     private Company company;
+
+    @ManyToOne
+    @JoinColumn(name = "driver_fk")
+    private Driver driver;
 
 }

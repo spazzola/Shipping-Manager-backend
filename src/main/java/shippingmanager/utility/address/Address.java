@@ -1,4 +1,4 @@
-package shippingmanager.utility;
+package shippingmanager.utility.address;
 
 import lombok.*;
 import shippingmanager.company.Company;
@@ -29,8 +29,5 @@ public class Address {
     private String street;
 
     private String houseNumber;
-
-    @OneToOne
-    private Company company;
 
 }

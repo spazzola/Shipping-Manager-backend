@@ -1,4 +1,4 @@
-package shippingmanager.utility;
+package shippingmanager.utility.loadinginformation;
 
 import lombok.*;
 import org.joda.time.DateTime;

@@ -1,6 +1,9 @@
-package shippingmanager.utility;
+package shippingmanager.utility.driver;
 
 import lombok.*;
+import shippingmanager.utility.orderdriver.OrderDriver;
+import shippingmanager.utility.phonenumber.PhoneNumber;
+import shippingmanager.utility.plate.Plate;
 
 import javax.persistence.*;
 import java.util.List;
