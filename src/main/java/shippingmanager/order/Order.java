@@ -6,8 +6,10 @@ import shippingmanager.company.Company;
 import shippingmanager.invoice.Invoice;
 import shippingmanager.utility.Driver;
 import shippingmanager.utility.LoadingInformation;
+import shippingmanager.utility.OrderDrivers;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,7 +28,7 @@ public class Order {
     private boolean isInvoiceCreated;
     private Company givenBy;
     private Company receivedBy;
-    private Driver driver;
+    private List<OrderDrivers> orderDrivers;
     private Invoice invoice;
     private LoadingInformation loadingInformation;
 
