@@ -1,11 +1,10 @@
 package shippingmanager.company;
 
 
-import jdk.internal.jline.internal.Nullable;
 import lombok.*;
-import shippingmanager.utility.Address;
-import shippingmanager.utility.BankAccount;
-import shippingmanager.utility.PhoneNumber;
+import shippingmanager.utility.address.Address;
+import shippingmanager.utility.bankaccount.BankAccount;
+import shippingmanager.utility.phonenumber.PhoneNumber;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,14 +31,27 @@ public class Company {
 
     private String email;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address_fk")
     private Address address;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade=CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade=CascadeType.ALL)
     private List<BankAccount> bankAccounts;
 
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", nip='" + nip + '\'' +
+                ", regon='" + regon + '\'' +
+                ", email='" + email + '\'' +
+                ", address=" + address +
+                ", phoneNumbers=" + phoneNumbers +
+                ", bankAccounts=" + bankAccounts +
+                '}';
+    }
 }

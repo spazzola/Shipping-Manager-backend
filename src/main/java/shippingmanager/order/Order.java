@@ -3,8 +3,8 @@ package shippingmanager.order;
 import lombok.*;
 import org.joda.time.DateTime;
 import shippingmanager.company.Company;
-import shippingmanager.utility.LoadingInformation;
-import shippingmanager.utility.OrderDriver;
+import shippingmanager.utility.loadinginformation.LoadingInformation;
+import shippingmanager.utility.orderdriver.OrderDriver;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
