@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMapper {
 
-    CompanyMapper companyMapper;
-    OrderDriverMapper orderDriverMapper;
-    LoadingInformationMapper loadingInformationMapper;
+    private final CompanyMapper companyMapper;
+    private final OrderDriverMapper orderDriverMapper;
+    private final LoadingInformationMapper loadingInformationMapper;
 
     public OrderDto toDto(Order order) {
         CompanyDto givenByDto = companyMapper.toDto(order.getGivenBy());

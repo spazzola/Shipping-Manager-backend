@@ -1,5 +1,6 @@
 package shippingmanager.utility.bankaccount;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import shippingmanager.company.Company;
 
@@ -24,6 +25,7 @@ public class BankAccount {
 
     private String accountNumber;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_fk")
     private Company company;

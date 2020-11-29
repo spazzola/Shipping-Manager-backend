@@ -1,6 +1,7 @@
 package shippingmanager.utility.orderdriver;
 
 import org.springframework.stereotype.Component;
+import shippingmanager.utility.driver.DriverDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,10 +10,14 @@ import java.util.stream.Collectors;
 public class OrderDriverMapper {
 
     public OrderDriverDto toDto(OrderDriver orderDriver) {
+        DriverDto driverDto = DriverDto.builder()
+                .name(orderDriver.getDriver().getName())
+                .surname(orderDriver.getDriver().getSurname())
+                .build();
+
         return OrderDriverDto.builder()
                 .id(orderDriver.getId())
-                .driver(orderDriver.getDriver())
-                .order(orderDriver.getOrder())
+                .driver(driverDto)
                 .build();
     }
 

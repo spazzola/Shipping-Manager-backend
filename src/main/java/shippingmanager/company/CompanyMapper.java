@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 import shippingmanager.utility.address.Address;
 import shippingmanager.utility.address.AddressDto;
 import shippingmanager.utility.address.AddressMapper;
+import shippingmanager.utility.bankaccount.BankAccount;
 import shippingmanager.utility.bankaccount.BankAccountDto;
 import shippingmanager.utility.bankaccount.BankAccountMapper;
+import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.phonenumber.PhoneNumberDto;
 import shippingmanager.utility.phonenumber.PhoneNumberMapper;
 
@@ -40,7 +42,16 @@ public class CompanyMapper {
                 .build();
     }
 
+    public List<CompanyDto> toDto(List<Company> companies) {
+        return companies.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     public Company fromDto(CompanyDto companyDto, Address address) {
+        List<BankAccount> bankAccounts = bankAccountMapper.fromDto(companyDto);
+        List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(companyDto);
+
         return Company.builder()
                 .id(companyDto.getId())
                 .companyName(companyDto.getCompanyName())
@@ -49,13 +60,9 @@ public class CompanyMapper {
                 .isContractor(companyDto.isContractor())
                 .email(companyDto.getEmail())
                 .address(address)
+                .bankAccounts(bankAccounts)
+                .phoneNumbers(phoneNumbers)
                 .build();
-    }
-
-    public List<CompanyDto> toDto(List<Company> companies) {
-        return companies.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
 }

@@ -1,5 +1,6 @@
 package shippingmanager.utility.phonenumber;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import shippingmanager.company.Company;
 import shippingmanager.utility.driver.Driver;
@@ -24,6 +25,7 @@ public class PhoneNumber {
 
     private String number;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_fk")
     private Company company;

@@ -20,6 +20,12 @@ public class AddressMapper {
                 .build();
     }
 
+    public List<AddressDto> toDto(List<Address> addresses) {
+        return addresses.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     public Address fromDto(CompanyDto companyDto) {
         final AddressDto addressDto = companyDto.getAddress();
         return Address.builder()
@@ -30,12 +36,6 @@ public class AddressMapper {
                 .street(addressDto.getStreet())
                 .town(addressDto.getTown())
                 .build();
-    }
-
-    public List<AddressDto> toDto(List<Address> addresses) {
-        return addresses.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
 }

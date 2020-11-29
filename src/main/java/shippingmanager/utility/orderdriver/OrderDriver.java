@@ -24,7 +24,7 @@ public class OrderDriver {
     @JoinColumn(name = "order_fk")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "driver_fk")
     private Driver driver;
 

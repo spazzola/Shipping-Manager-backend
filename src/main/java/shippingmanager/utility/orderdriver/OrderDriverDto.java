@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import shippingmanager.order.Order;
-import shippingmanager.utility.driver.Driver;
+import shippingmanager.utility.driver.DriverDto;
 
 @Data
 @Builder
@@ -14,7 +13,6 @@ import shippingmanager.utility.driver.Driver;
 public class OrderDriverDto {
 
     private Long id;
-    private Order order;
-    private Driver driver;
+    private DriverDto driver;
 
 }

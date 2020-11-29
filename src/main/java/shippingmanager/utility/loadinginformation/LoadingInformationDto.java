@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-import shippingmanager.company.Company;
+import shippingmanager.company.CompanyDto;
 import shippingmanager.utility.CustomDateTimeDeserializer;
 
 @Data
@@ -16,8 +16,10 @@ import shippingmanager.utility.CustomDateTimeDeserializer;
 public class LoadingInformationDto {
 
     private Long id;
-    private Company loadingPlace;
-    private Company unLoadingPlace;
+
+    private CompanyDto loadingPlace;
+
+    private CompanyDto unLoadingPlace;
 
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     private DateTime minLoadingDate;

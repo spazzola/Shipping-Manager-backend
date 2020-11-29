@@ -17,8 +17,10 @@ public class CreateOrderRequest {
 
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     private DateTime createdDate;
+
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     private DateTime paymentDate;
+
     private BigDecimal value;
     private BigDecimal weight;
     private String description;

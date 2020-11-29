@@ -20,11 +20,11 @@ public class LoadingInformation {
     @Column(name = "loading_information_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loading_place_fk")
     private Company loadingPlace;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "unloading_place_fk")
     private Company unloadingPlace;
 

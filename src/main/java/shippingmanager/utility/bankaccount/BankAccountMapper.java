@@ -20,6 +20,26 @@ public class BankAccountMapper {
                 .build();
     }
 
+    public List<BankAccountDto> toDto(List<BankAccount> bankAccounts) {
+        return bankAccounts.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<BankAccount> fromDto(CompanyDto companyDto) {
+        final List<BankAccountDto> bankAccountsDto = companyDto.getBankAccounts();
+        final List<BankAccount> bankAccounts = new ArrayList<>();
+
+        for (BankAccountDto bankAccountDto : bankAccountsDto) {
+            bankAccounts.add(BankAccount.builder()
+                    .id(bankAccountDto.getId())
+                    .accountName(bankAccountDto.getAccountName())
+                    .accountNumber(bankAccountDto.getAccountNumber())
+                    .build());
+        }
+        return bankAccounts;
+    }
+
     public List<BankAccount> fromDto(CompanyDto companyDto, Company company) {
         final List<BankAccountDto> bankAccountsDto = companyDto.getBankAccounts();
         final List<BankAccount> bankAccounts = new ArrayList<>();
@@ -33,12 +53,6 @@ public class BankAccountMapper {
                     .build());
         }
         return bankAccounts;
-    }
-
-    public List<BankAccountDto> toDto(List<BankAccount> bankAccounts) {
-        return bankAccounts.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
 }

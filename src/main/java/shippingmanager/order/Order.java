@@ -1,6 +1,8 @@
 package shippingmanager.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import shippingmanager.company.Company;
 import shippingmanager.utility.loadinginformation.LoadingInformation;
@@ -24,8 +26,10 @@ public class Order {
     @Column(name = "invoice_id")
     private Long id;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime createdDate;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime paymentDate;
 
     private BigDecimal value;
@@ -46,10 +50,11 @@ public class Order {
     @JoinColumn(name = "received_by_fk")
     private Company receivedBy;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderDriver> orderDrivers;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "loading_information_fk")
     private LoadingInformation loadingInformation;
 

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import shippingmanager.utility.driver.Driver;
 
 @Data
 @Builder
@@ -14,6 +13,5 @@ public class PlateDto {
 
     private Long id;
     private String plateNumber;
-    private Driver driver;
 
 }
