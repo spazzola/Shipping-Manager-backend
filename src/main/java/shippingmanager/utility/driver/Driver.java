@@ -27,7 +27,7 @@ public class Driver {
     private String surname;
 
     @OneToMany(mappedBy = "driver")
-    private List<OrderDriver> orderDriver;
+    private List<OrderDriver> orderDrivers;
 
     @OneToMany(mappedBy = "driver")
     private List<Plate> plates;

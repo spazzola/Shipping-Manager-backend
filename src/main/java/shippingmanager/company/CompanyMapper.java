@@ -33,6 +33,7 @@ public class CompanyMapper {
                 .nip(company.getNip())
                 .regon(company.getRegon())
                 .email(company.getEmail())
+                .isContractor(company.isContractor())
                 .address(addressDto)
                 .phoneNumbers(phoneNumbersDto)
                 .bankAccounts(bankAccountsDto)
@@ -45,6 +46,7 @@ public class CompanyMapper {
                 .companyName(companyDto.getCompanyName())
                 .nip(companyDto.getNip())
                 .regon(companyDto.getRegon())
+                .isContractor(companyDto.isContractor())
                 .email(companyDto.getEmail())
                 .address(address)
                 .build();
