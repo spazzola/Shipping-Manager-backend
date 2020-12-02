@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @Component
 public class PlateMapper {
 
+
     public PlateDto toDto(Plate plate) {
         return PlateDto.builder()
                 .id(plate.getId())
@@ -25,7 +26,6 @@ public class PlateMapper {
 
     public List<Plate> fromDto(DriverDto driverDto) {
         List<Plate> plates = new ArrayList<>();
-
         for (PlateDto plateDto : driverDto.getPlates()) {
             plates.add(Plate.builder()
                     .plateNumber(plateDto.getPlateNumber())
@@ -34,5 +34,7 @@ public class PlateMapper {
 
         return plates;
     }
+
+
 
 }

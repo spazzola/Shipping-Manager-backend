@@ -26,13 +26,13 @@ public class Driver {
 
     private String surname;
 
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
     private List<OrderDriver> orderDrivers;
 
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     private List<Plate> plates;
 
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
 }

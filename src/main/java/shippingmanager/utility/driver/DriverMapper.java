@@ -42,17 +42,23 @@ public class DriverMapper {
     public List<Driver> fromDto(List<DriverDto> driversDto) {
         List<Driver> drivers = new ArrayList<>();
         for (DriverDto driverDto : driversDto) {
-            List<Plate> plates = plateMapper.fromDto(driverDto);
-            List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(driverDto);
-
-            drivers.add(Driver.builder()
-                    .name(driverDto.getName())
-                    .surname(driverDto.getSurname())
-                    .plates(plates)
-                    .phoneNumbers(phoneNumbers)
-                    .build());
+            drivers.add(fromDto(driverDto));
         }
 
         return drivers;
     }
+
+    public Driver fromDto(DriverDto driverDto) {
+        List<Plate> plates = plateMapper.fromDto(driverDto);
+        List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(driverDto);
+
+        return Driver.builder()
+                .name(driverDto.getName())
+                .surname(driverDto.getSurname())
+                .plates(plates)
+                .phoneNumbers(phoneNumbers)
+                .build();
+    }
+
 }
+

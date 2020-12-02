@@ -1,7 +1,6 @@
 package shippingmanager.utility.address;
 
 import org.springframework.stereotype.Component;
-import shippingmanager.company.CompanyDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +25,7 @@ public class AddressMapper {
                 .collect(Collectors.toList());
     }
 
-    public Address fromDto(CompanyDto companyDto) {
-        final AddressDto addressDto = companyDto.getAddress();
+    public Address fromDto(AddressDto addressDto) {
         return Address.builder()
                 .id(addressDto.getId())
                 .city(addressDto.getCity())

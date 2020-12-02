@@ -48,7 +48,8 @@ public class CompanyMapper {
                 .collect(Collectors.toList());
     }
 
-    public Company fromDto(CompanyDto companyDto, Address address) {
+    public Company fromDto(CompanyDto companyDto) {
+        Address address = addressMapper.fromDto(companyDto.getAddress());
         List<BankAccount> bankAccounts = bankAccountMapper.fromDto(companyDto);
         List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(companyDto);
 
