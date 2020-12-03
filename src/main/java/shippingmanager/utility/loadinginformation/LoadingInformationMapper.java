@@ -2,8 +2,6 @@ package shippingmanager.utility.loadinginformation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import shippingmanager.company.CompanyDto;
-import shippingmanager.company.CompanyMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,16 +10,25 @@ import java.util.stream.Collectors;
 @Component
 public class LoadingInformationMapper {
 
-    private CompanyMapper companyMapper;
 
     public LoadingInformationDto toDto(LoadingInformation loadingInformation) {
-        CompanyDto loadingPlace = companyMapper.toDto(loadingInformation.getLoadingPlace());
-        CompanyDto unLoadingPlace = companyMapper.toDto(loadingInformation.getUnloadingPlace());
 
         return LoadingInformationDto.builder()
                 .id(loadingInformation.getId())
-                .loadingPlace(loadingPlace)
-                .unLoadingPlace(unLoadingPlace)
+                .loadingPlace(loadingInformation.getLoadingPlace())
+                .unloadingPlace(loadingInformation.getUnloadingPlace())
+                .minLoadingDate(loadingInformation.getMinLoadingDate())
+                .maxLoadingDate(loadingInformation.getMaxLoadingDate())
+                .minUnloadingDate(loadingInformation.getMinUnloadingDate())
+                .maxUnloadingDate(loadingInformation.getMaxUnloadingDate())
+                .build();
+    }
+
+    public LoadingInformation fromDto(LoadingInformationDto  loadingInformation) {
+
+        return LoadingInformation.builder()
+                .loadingPlace(loadingInformation.getLoadingPlace())
+                .unloadingPlace(loadingInformation.getLoadingPlace())
                 .minLoadingDate(loadingInformation.getMinLoadingDate())
                 .maxLoadingDate(loadingInformation.getMaxLoadingDate())
                 .minUnloadingDate(loadingInformation.getMinUnloadingDate())

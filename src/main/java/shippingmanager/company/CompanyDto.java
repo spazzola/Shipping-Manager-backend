@@ -21,7 +21,6 @@ public class CompanyDto {
     private String nip;
     private String regon;
     private String email;
-    private boolean isContractor;
     private AddressDto address;
     private List<PhoneNumberDto> phoneNumbers;
     private List<BankAccountDto> bankAccounts;

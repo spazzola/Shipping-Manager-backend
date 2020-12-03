@@ -21,13 +21,9 @@ public class LoadingInformation {
     @Column(name = "loading_information_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "loading_place_fk")
-    private Company loadingPlace;
+    private String loadingPlace;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "unloading_place_fk")
-    private Company unloadingPlace;
+    private String unloadingPlace;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime minLoadingDate;

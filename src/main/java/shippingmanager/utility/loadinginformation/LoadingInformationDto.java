@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import shippingmanager.company.CompanyDto;
 
 import java.time.LocalDateTime;
 
@@ -17,9 +16,9 @@ public class LoadingInformationDto {
 
     private Long id;
 
-    private CompanyDto loadingPlace;
+    private String loadingPlace;
 
-    private CompanyDto unLoadingPlace;
+    private String unloadingPlace;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime minLoadingDate;

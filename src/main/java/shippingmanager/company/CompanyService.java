@@ -23,8 +23,6 @@ public class CompanyService {
         company.getBankAccounts().
                 forEach(bankAccount -> bankAccount.setCompany(company));
 
-        company.setContractor(true);
-
         return companyDao.save(company);
     }
 
