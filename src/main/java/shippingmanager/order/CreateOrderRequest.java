@@ -22,6 +22,7 @@ public class CreateOrderRequest {
     private BigDecimal value;
     private BigDecimal weight;
     private String description;
+    private String orderType;
     private Long givenById;
     private Long receivedById;
     private List<DriverDto> drivers;

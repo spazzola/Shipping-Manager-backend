@@ -40,6 +40,8 @@ public class Order {
 
     private String orderNumber;
 
+    private String orderType;
+
     private boolean isInvoiceCreated;
 
     @ManyToOne

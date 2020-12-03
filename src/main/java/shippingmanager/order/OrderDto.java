@@ -31,6 +31,7 @@ public class OrderDto {
     private BigDecimal weight;
     private String description;
     private String orderNumber;
+    private String orderType;
     private boolean isInvoiceCreated;
     private CompanyDto givenBy;
     private CompanyDto receivedBy;

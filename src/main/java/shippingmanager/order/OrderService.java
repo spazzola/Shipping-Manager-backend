@@ -35,11 +35,6 @@ public class OrderService {
         LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
         List<Driver> drivers = driverService.createDrivers(createOrderRequest);
 
-        Company givenBy = companyDao.findById(createOrderRequest.getGivenById())
-                .orElseThrow(NoSuchElementException::new);
-        Company receivedBy = companyDao.findById(createOrderRequest.getReceivedById())
-                .orElseThrow(NoSuchElementException::new);
-
         String orderNumber = generateOrderNumber(createOrderRequest.getCreatedDate());
 
         Order order = Order.builder()
@@ -48,16 +43,39 @@ public class OrderService {
                 .value(createOrderRequest.getValue())
                 .weight(createOrderRequest.getWeight())
                 .description(createOrderRequest.getDescription())
-                .givenBy(givenBy)
-                .receivedBy(receivedBy)
+                .orderType(createOrderRequest.getOrderType())
                 .orderNumber(orderNumber)
                 .loadingInformation(loadingInformation)
                 .build();
+
+        order = appendCompanies(order, createOrderRequest);
 
         List<OrderDriver> orderDrivers = orderDriverService.createOrderDrivers(drivers, order);
         order.setOrderDrivers(orderDrivers);
 
         return orderDao.save(order);
+    }
+
+    private Order appendCompanies(Order order, CreateOrderRequest createOrderRequest) {
+        switch (createOrderRequest.getOrderType().toUpperCase()) {
+            case "GIVEN":
+                Company receivedBy = companyDao.findById(createOrderRequest.getReceivedById())
+                        .orElseThrow(NoSuchElementException::new);
+                Company givenBy = companyDao.findByIsMainCompanyTrue();
+                order.setReceivedBy(receivedBy);
+                order.setGivenBy(givenBy);
+                break;
+            case "RECEIVED":
+                receivedBy = companyDao.findByIsMainCompanyTrue();
+                givenBy = companyDao.findById(createOrderRequest.getGivenById())
+                        .orElseThrow(NoSuchElementException::new);
+                order.setReceivedBy(receivedBy);
+                order.setGivenBy(givenBy);
+                break;
+            default:
+                throw new RuntimeException("Wrong order type");
+        }
+        return order;
     }
 
     private String generateOrderNumber(LocalDateTime localDateTime) {

@@ -35,6 +35,7 @@ public class OrderMapper {
                 .weight(order.getWeight())
                 .description(order.getDescription())
                 .orderNumber(order.getOrderNumber())
+                .orderType(order.getOrderType())
                 .isInvoiceCreated(order.isInvoiceCreated())
                 .givenBy(givenByDto)
                 .receivedBy(receivedByDto)

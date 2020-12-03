@@ -31,6 +31,8 @@ public class Company {
 
     private String email;
 
+    private boolean isMainCompany;
+
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address_fk")
     private Address address;
