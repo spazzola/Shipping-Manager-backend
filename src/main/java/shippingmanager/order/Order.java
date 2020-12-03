@@ -1,15 +1,15 @@
 package shippingmanager.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 import shippingmanager.company.Company;
 import shippingmanager.utility.loadinginformation.LoadingInformation;
 import shippingmanager.utility.orderdriver.OrderDriver;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -26,11 +26,11 @@ public class Order {
     @Column(name = "invoice_id")
     private Long id;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime createdDate;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime paymentDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime paymentDate;
 
     private BigDecimal value;
 

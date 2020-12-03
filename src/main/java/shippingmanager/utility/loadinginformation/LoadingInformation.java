@@ -1,10 +1,11 @@
 package shippingmanager.utility.loadinginformation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.joda.time.DateTime;
 import shippingmanager.company.Company;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,12 +29,16 @@ public class LoadingInformation {
     @JoinColumn(name = "unloading_place_fk")
     private Company unloadingPlace;
 
-    private DateTime minLoadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime minLoadingDate;
 
-    private DateTime maxLoadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime maxLoadingDate;
 
-    private DateTime minUnloadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime minUnloadingDate;
 
-    private DateTime maxUnloadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime maxUnloadingDate;
 
 }

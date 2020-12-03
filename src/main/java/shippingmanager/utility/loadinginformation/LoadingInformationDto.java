@@ -1,14 +1,13 @@
 package shippingmanager.utility.loadinginformation;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 import shippingmanager.company.CompanyDto;
-import shippingmanager.utility.CustomDateTimeDeserializer;
-import shippingmanager.utility.phonenumber.PhoneNumber;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -22,16 +21,16 @@ public class LoadingInformationDto {
 
     private CompanyDto unLoadingPlace;
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime minLoadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime minLoadingDate;
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime maxLoadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime maxLoadingDate;
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime minUnloadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime minUnloadingDate;
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime maxUnloadingDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime maxUnloadingDate;
 
 }

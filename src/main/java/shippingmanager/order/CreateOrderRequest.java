@@ -2,11 +2,9 @@ package shippingmanager.order;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.joda.time.DateTime;
-import shippingmanager.company.CompanyDto;
-import shippingmanager.utility.CustomDateTimeDeserializer;
+import java.time.LocalDateTime;
 import shippingmanager.utility.driver.DriverDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
 
@@ -15,11 +13,11 @@ import java.math.BigDecimal;
 @Data
 public class CreateOrderRequest {
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime createdDate;
 
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    private DateTime paymentDate;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime paymentDate;
 
     private BigDecimal value;
     private BigDecimal weight;
