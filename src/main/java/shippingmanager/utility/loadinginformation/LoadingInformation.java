@@ -29,16 +29,16 @@ public class LoadingInformation {
     @JoinColumn(name = "unloading_place_fk")
     private Company unloadingPlace;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime minLoadingDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime maxLoadingDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime minUnloadingDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime maxUnloadingDate;
 
 }

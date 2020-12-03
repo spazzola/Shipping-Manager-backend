@@ -21,10 +21,10 @@ public class OrderDto {
 
     private Long id;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime paymentDate;
 
     private BigDecimal value;
