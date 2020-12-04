@@ -60,4 +60,24 @@ public class Order {
     @JoinColumn(name = "loading_information_fk")
     private LoadingInformation loadingInformation;
 
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                ", paymentDate=" + paymentDate +
+                ", value=" + value +
+                ", weight=" + weight +
+                ", description='" + description + '\'' +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", orderType='" + orderType + '\'' +
+                ", isInvoiceCreated=" + isInvoiceCreated +
+                ", givenBy=" + givenBy +
+                ", receivedBy=" + receivedBy +
+                ", orderDrivers=" + orderDrivers +
+                ", loadingInformation=" + loadingInformation +
+                '}';
+    }
+
 }

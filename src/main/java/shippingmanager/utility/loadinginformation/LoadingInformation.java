@@ -37,4 +37,18 @@ public class LoadingInformation {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime maxUnloadingDate;
 
+
+    @Override
+    public String toString() {
+        return "LoadingInformation{" +
+                "id=" + id +
+                ", loadingPlace='" + loadingPlace + '\'' +
+                ", unloadingPlace='" + unloadingPlace + '\'' +
+                ", minLoadingDate=" + minLoadingDate +
+                ", maxLoadingDate=" + maxLoadingDate +
+                ", minUnloadingDate=" + minUnloadingDate +
+                ", maxUnloadingDate=" + maxUnloadingDate +
+                '}';
+    }
+
 }

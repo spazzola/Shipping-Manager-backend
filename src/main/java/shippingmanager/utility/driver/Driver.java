@@ -35,4 +35,17 @@ public class Driver {
     @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     private List<PhoneNumber> phoneNumbers;
 
+
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", orderDrivers=" + orderDrivers +
+                ", plates=" + plates +
+                ", phoneNumbers=" + phoneNumbers +
+                '}';
+    }
+
 }
