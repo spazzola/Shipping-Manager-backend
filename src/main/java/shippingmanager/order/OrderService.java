@@ -46,7 +46,9 @@ public class OrderService {
                 .paymentDate(createOrderRequest.getPaymentDate())
                 .value(createOrderRequest.getValue())
                 .weight(createOrderRequest.getWeight())
+                .currency(createOrderRequest.getCurrency())
                 .description(createOrderRequest.getDescription())
+                .comment(createOrderRequest.getComment())
                 .orderType(createOrderRequest.getOrderType())
                 .orderNumber(orderNumber)
                 .loadingInformation(loadingInformation)
@@ -79,9 +81,9 @@ public class OrderService {
             exceptionMessage += "Bad value of merchantTypes: " + "givenById: " + createOrderRequest.getGivenById() +
                     " receivedById: " + createOrderRequest.getReceivedById() + " ";
         }
-        if (areInvalidDrivers(createOrderRequest)) {
+        /*if (areInvalidDrivers(createOrderRequest)) {
             exceptionMessage += "Bad value of drivers: " + createOrderRequest.getDrivers() + " ";
-        }
+        }*/
         if (isInvalidLoadingInformation(createOrderRequest.getLoadingInformation())) {
             exceptionMessage += "Bad value of loadingInformation: " + createOrderRequest.getLoadingInformation();
         }

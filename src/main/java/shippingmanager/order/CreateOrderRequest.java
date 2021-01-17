@@ -21,7 +21,9 @@ public class CreateOrderRequest {
 
     private BigDecimal value;
     private BigDecimal weight;
+    private String currency;
     private String description;
+    private String comment;
     private String orderType;
     private Long givenById;
     private Long receivedById;

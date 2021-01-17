@@ -36,7 +36,11 @@ public class Order {
 
     private BigDecimal weight;
 
+    private String currency;
+
     private String description;
+
+    private String comment;
 
     private String orderNumber;
 

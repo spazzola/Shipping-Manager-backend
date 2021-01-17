@@ -86,7 +86,8 @@ public class PdfOrderService  {
         addLoadingsInfo(table, orderDto.getLoadingInformation());
         addDescriptionInfo(table, orderDto);
         addDriverInfo(table, orderDto);
-
+        addPriceInfo(table, orderDto);
+        addComment(table, orderDto);
 
         document.add(table);
 
@@ -260,10 +261,20 @@ public class PdfOrderService  {
         return builder.toString();
     }
 
+    private void addComment(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+        PdfPCell cell = createRowWithText("Uwagi", orderDto.getComment());
+        table.addCell(cell);
+    }
+
+    private void addPriceInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+        PdfPCell cell = createRowWithText("Stawka: ", orderDto.getValue().toString() + orderDto.getCurrency());
+        table.addCell(cell);
+    }
+
     private PdfPCell createRowWithText(String header, String text) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         cell.setColspan(2);
-        setPadding(cell, 5, 5, 5, 5);
+        setPadding(cell, 2, 5, 5, 5);
         ridBlankSpace(cell);
 
         cell.addElement(new Phrase(header, MyFont.getBoldFont(12)));
