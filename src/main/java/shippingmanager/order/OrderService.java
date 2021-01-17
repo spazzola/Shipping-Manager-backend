@@ -46,6 +46,8 @@ public class OrderService {
                 .paymentDate(createOrderRequest.getPaymentDate())
                 .value(createOrderRequest.getValue())
                 .weight(createOrderRequest.getWeight())
+                .daysTillPayment(createOrderRequest.getDaysTillPayment())
+                .createdPlace(createOrderRequest.getCreatedPlace())
                 .currency(createOrderRequest.getCurrency())
                 .description(createOrderRequest.getDescription())
                 .comment(createOrderRequest.getComment())

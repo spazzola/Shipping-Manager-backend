@@ -33,6 +33,8 @@ public class OrderMapper {
                 .paymentDate(order.getPaymentDate())
                 .value(order.getValue())
                 .weight(order.getWeight())
+                .daysTillPayment(order.getDaysTillPayment())
+                .createdPlace(order.getCreatedPlace())
                 .currency(order.getCurrency())
                 .description(order.getDescription())
                 .comment(order.getComment())

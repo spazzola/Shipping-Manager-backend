@@ -29,6 +29,8 @@ public class OrderDto {
 
     private BigDecimal value;
     private BigDecimal weight;
+    private String daysTillPayment;
+    private String createdPlace;
     private String currency;
     private String description;
     private String comment;

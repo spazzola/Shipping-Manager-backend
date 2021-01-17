@@ -36,6 +36,10 @@ public class Order {
 
     private BigDecimal weight;
 
+    private String daysTillPayment;
+
+    private String createdPlace;
+
     private String currency;
 
     private String description;
