@@ -1,12 +1,12 @@
 package shippingmanager.invoice;
 
 import lombok.*;
-import org.joda.time.DateTime;
 import shippingmanager.company.Company;
 import shippingmanager.order.Order;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,9 +24,9 @@ public class Invoice {
 
     private String invoiceNumber;
 
-    private DateTime issuedDate;
+    private LocalDateTime issuedDate;
 
-    private DateTime paymentDate;
+    private LocalDateTime paymentDate;
 
     private BigDecimal valueWithTax;
 
