@@ -86,7 +86,7 @@ public class PdfOrderService  {
         addLoadingsInfo(table, orderDto.getLoadingInformation());
         addDescriptionInfo(table, orderDto);
         addDriverInfo(table, orderDto);
-        addCommentInfo();
+
 
         document.add(table);
 
@@ -214,29 +214,16 @@ public class PdfOrderService  {
     }
 
     private void addDescriptionInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        cell.setColspan(2);
-        setPadding(cell, 5, 5, 5, 5);
-        ridBlankSpace(cell);
-
-        cell.addElement(new Paragraph("Opis ładunku", MyFont.getBoldFont(12)));
-        cell.addElement(new Phrase(orderDto.getDescription(), MyFont.getNormalFont()));
-
+        PdfPCell cell = createRowWithText("Opis ładunku", orderDto.getDescription());
         table.addCell(cell);
     }
 
     private void addDriverInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        cell.setColspan(2);
-        setPadding(cell, 5, 5, 5, 5);
-        ridBlankSpace(cell);
-
         String driversInfo = buildDriversInfoString(orderDto.getOrderDrivers());
-        cell.addElement(new Paragraph("Dane kierowcy/ów", MyFont.getBoldFont(12)));
-        cell.addElement(new Phrase(driversInfo, MyFont.getNormalFont()));
-
+        PdfPCell cell = createRowWithText("Dane kierowcy", driversInfo);
         table.addCell(cell);
     }
+
 
     private String buildDriversInfoString(List<OrderDriverDto> orderDrivers) {
         StringBuilder builder = new StringBuilder();
@@ -273,8 +260,16 @@ public class PdfOrderService  {
         return builder.toString();
     }
 
-    private void addCommentInfo() {
+    private PdfPCell createRowWithText(String header, String text) throws IOException, DocumentException {
+        PdfPCell cell = new PdfPCell();
+        cell.setColspan(2);
+        setPadding(cell, 5, 5, 5, 5);
+        ridBlankSpace(cell);
 
+        cell.addElement(new Phrase(header, MyFont.getBoldFont(12)));
+        cell.addElement(new Phrase(text, MyFont.getNormalFont()));
+
+        return cell;
     }
 
     private void setPadding(PdfPCell cell, int top, int right, int bottom, int left) {
