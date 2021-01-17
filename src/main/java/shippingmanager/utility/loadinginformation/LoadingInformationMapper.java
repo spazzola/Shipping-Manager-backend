@@ -28,7 +28,7 @@ public class LoadingInformationMapper {
 
         return LoadingInformation.builder()
                 .loadingPlace(loadingInformation.getLoadingPlace())
-                .unloadingPlace(loadingInformation.getLoadingPlace())
+                .unloadingPlace(loadingInformation.getUnloadingPlace())
                 .minLoadingDate(loadingInformation.getMinLoadingDate())
                 .maxLoadingDate(loadingInformation.getMaxLoadingDate())
                 .minUnloadingDate(loadingInformation.getMinUnloadingDate())
