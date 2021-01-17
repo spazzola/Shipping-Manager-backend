@@ -104,5 +104,6 @@
     <orderEntry type="library" name="Maven: org.jadira.usertype:usertype.core:7.0.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.jadira.usertype:usertype.spi:7.0.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:itextpdf:5.5.13.2" level="project" />
   </component>
 </module>
