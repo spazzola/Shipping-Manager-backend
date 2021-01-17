@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import shippingmanager.company.CompanyDto;
 import shippingmanager.order.Order;
@@ -16,16 +14,12 @@ import shippingmanager.order.OrderDao;
 import shippingmanager.order.OrderDto;
 import shippingmanager.order.OrderMapper;
 import shippingmanager.utility.address.AddressDto;
-import shippingmanager.utility.driver.Driver;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
-import shippingmanager.utility.orderdriver.OrderDriver;
 import shippingmanager.utility.orderdriver.OrderDriverDto;
 import shippingmanager.utility.phonenumber.PhoneNumberDto;
-import shippingmanager.utility.plate.Plate;
 import shippingmanager.utility.plate.PlateDto;
 
 import java.io.FileOutputStream;
-import java.util.Arrays;
 
 @AllArgsConstructor
 @Service
@@ -38,46 +32,16 @@ public class PdfOrderService  {
         FontFactory.registerDirectory("src/main/resources/fonts/");
         Order order = orderDao.findById(1L)
                 .orElseThrow(Exception::new);
-
         OrderDto orderDto = orderMapper.toDto(order);
-        /*OrderDto orderDto = new OrderDto();
-        List<PhoneNumberDto> phoneNumbers = Arrays.asList(new PhoneNumberDto(1L, "kom", "23124141"),
-                                                          new PhoneNumberDto(1L, "kom", "892752789"),
-                                                          new PhoneNumberDto(1L, "kom", "123131437"));
-        orderDto.setOrderNumber("12/12/2020");
-        CompanyDto companyDto = CompanyDto.builder()
-                .address(AddressDto.builder()
-                        .street("Kabatow")
-                        .houseNumber("20a")
-                        .city("Zywiec")
-                        .postalCode("34-300")
-                        .build())
-                .phoneNumbers(phoneNumbers)
-                .nip("5531004598")
-                .companyName("MAX-TRANS")
-                .build();
-        orderDto.setLoadingInformation(LoadingInformationDto.builder()
-                .loadingPlace("Browar Żywiec ul.Jakas tam 12")
-                .unloadingPlace("Jamaica Wyspa Buchów 420")
-                .minLoadingDate(LocalDateTime.of(2020, 12, 20, 13, 20))
-                .maxLoadingDate(LocalDateTime.of(2020, 12, 20, 13, 20))
-                .minUnloadingDate(LocalDateTime.of(2020, 12, 20, 13, 20))
-                .maxUnloadingDate(LocalDateTime.of(2020, 12, 20, 13, 20))
-                .build());
-
-        orderDto.setDescription("Załadunek adfklafjalkjlad lad;kad;adas dadasda");
-        orderDto.setGivenBy(companyDto);
-        orderDto.setReceivedBy(companyDto);*/
 
         String pdfName = generatePdfName(orderDto);
 
-        Document document = new Document(PageSize.A4, 20, 20, 30, 50);
+        Document document = new Document(PageSize.A4, 20, 20, 20, 20);
         PdfWriter.getInstance(document, new FileOutputStream(pdfName));
 
         document.open();
 
-        addHeader(orderDto, document);
-        //document.add(Chunk.NEWLINE);
+        addHeaders(document, orderDto);
 
         PdfPTable table = new PdfPTable(2);
         table.setSpacingBefore(20f);
@@ -87,12 +51,18 @@ public class PdfOrderService  {
         addDescriptionInfo(table, orderDto);
         addDriverInfo(table, orderDto);
         addPriceInfo(table, orderDto);
+        addPaymentInfo(table, orderDto);
         addComment(table, orderDto);
+        addRegulationsInfo(table, orderDto);
 
         document.add(table);
 
-        //PdfPTable secondTable = new PdfPTable(1);
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
 
+        addSignaturesFields(document);
+        addFooter(document);
 
         document.close();
     }
@@ -102,7 +72,23 @@ public class PdfOrderService  {
         return "Zamówienie" + orderNumber + ".pdf";
     }
 
-    private void addHeader(OrderDto orderDto, Document document) throws DocumentException, IOException {
+    private void addHeaders(Document document, OrderDto orderDto) throws DocumentException, IOException {
+        addPlaceAndDateHeader(document, orderDto);
+        addOrderNumberHeader(document, orderDto);
+    }
+
+    private void addPlaceAndDateHeader(Document document, OrderDto orderDto) throws IOException, DocumentException {
+        String createdDate = rebuildDateFormat(orderDto.getCreatedDate());
+        int spaceIndex = createdDate.indexOf(" ");
+        createdDate = createdDate.substring(0, spaceIndex);
+
+        Paragraph header = new Paragraph(orderDto.getCreatedPlace() + " " + createdDate, MyFont.getNormalFont());
+        header.setAlignment(Element.ALIGN_RIGHT);
+        document.add(header);
+        document.add(Chunk.NEWLINE);
+    }
+
+    private void addOrderNumberHeader(Document document, OrderDto orderDto) throws DocumentException, IOException {
         Paragraph header = new Paragraph("Zlecenie transportowe nr: " + orderDto.getOrderNumber(), MyFont.getBoldFont(16));
         header.setAlignment(Element.ALIGN_CENTER);
         document.add(header);
@@ -111,11 +97,11 @@ public class PdfOrderService  {
     private void addCompaniesInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
 
-        cell.addElement(new Phrase("Zleceniodawca", MyFont.getBoldFont(12)));
+        cell.addElement(new Phrase("Zleceniodawca", MyFont.getBoldFont(10)));
         addCompanyInfo(table, cell, orderDto.getGivenBy());
 
         PdfPCell cell2 = new PdfPCell();
-        cell2.addElement(new Phrase("Zleceniobiorca", MyFont.getBoldFont(12)));
+        cell2.addElement(new Phrase("Zleceniobiorca", MyFont.getBoldFont(10)));
         addCompanyInfo(table, cell2, orderDto.getReceivedBy());
     }
 
@@ -157,7 +143,7 @@ public class PdfOrderService  {
         ridBlankSpace(cell);
         setPadding(cell, 2, 5, 5, 5);
 
-        cell.addElement((new Phrase("Data i godzina załadunku", MyFont.getBoldFont(12))));
+        cell.addElement((new Phrase("Data i godzina załadunku", MyFont.getBoldFont(10))));
         String loadingDate = buildLoadingDate(loadingInformation);
         cell.addElement(new Phrase(loadingDate, MyFont.getNormalFont()));
 
@@ -169,7 +155,7 @@ public class PdfOrderService  {
         ridBlankSpace(cell);
         setPadding(cell, 2, 5, 5, 5);
 
-        cell.addElement((new Phrase("Data i godzina rozładunku", MyFont.getBoldFont(12))));
+        cell.addElement((new Phrase("Data i godzina rozładunku", MyFont.getBoldFont(10))));
         String unloadingDate = buildUnloadingDate(loadingInformation);
         cell.addElement(new Phrase(unloadingDate, MyFont.getNormalFont()));
 
@@ -178,16 +164,16 @@ public class PdfOrderService  {
 
     private String buildLoadingDate(LoadingInformationDto loadingInformation) {
         String result = "";
-        result += loadingInformation.getMinLoadingDate().toString().replace("T", " ") + " - ";
-        result += loadingInformation.getMaxLoadingDate().toString().replace("T", " ");
+        result += rebuildDateFormat(loadingInformation.getMinLoadingDate()) + " - ";
+        result += rebuildDateFormat(loadingInformation.getMaxLoadingDate());
 
         return result;
     }
 
     private String buildUnloadingDate(LoadingInformationDto loadingInformation) {
         String result = "";
-        result += loadingInformation.getMinUnloadingDate().toString().replace("T", " ") + " - ";
-        result += loadingInformation.getMaxUnloadingDate().toString().replace("T", " ");
+        result += rebuildDateFormat(loadingInformation.getMinUnloadingDate()) + " - ";
+        result += rebuildDateFormat(loadingInformation.getMaxUnloadingDate());
 
         return result;
     }
@@ -197,7 +183,7 @@ public class PdfOrderService  {
         ridBlankSpace(cell);
         setPadding(cell, 2, 5, 5, 5);
 
-        cell.addElement(new Phrase("Miejsce załadunku", MyFont.getBoldFont(12)));
+        cell.addElement(new Phrase("Miejsce załadunku", MyFont.getBoldFont(10)));
         cell.addElement(new Phrase(loadingInformation.getLoadingPlace(), MyFont.getNormalFont()));
 
         table.addCell(cell);
@@ -208,7 +194,7 @@ public class PdfOrderService  {
         ridBlankSpace(cell);
         setPadding(cell, 2, 5, 5, 5);
 
-        cell.addElement((new Phrase("Miejsce rozładunku", MyFont.getBoldFont(12))));
+        cell.addElement((new Phrase("Miejsce rozładunku", MyFont.getBoldFont(10))));
         cell.addElement(new Phrase(loadingInformationDto.getUnloadingPlace(), MyFont.getNormalFont()));
         table.addCell(cell);
 
@@ -271,16 +257,59 @@ public class PdfOrderService  {
         table.addCell(cell);
     }
 
+    private void addPaymentInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+        String daysTillPayment = orderDto.getDaysTillPayment() + " dni od otrzymania FV";
+        PdfPCell cell = createRowWithText("Warunku płatności", daysTillPayment);
+        table.addCell(cell);
+    }
+
+    private void addRegulationsInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+        PdfPCell cell = createRowWithText("Regulamin", "* Wymagamy aby na powyższe zlecenie podstawiony był samochod:  sprawny, czysty, bez obcych zapachów, posiadający aktualną\n" +
+                "  polise  OC i OCP, natomiast zleceniobiorca posiadał wymagane prawem  zezwolenia na wykonywanie transportu.   \n" +
+                "* Prosimy o sprawdzenie poprawności zlecenia i potwierdzenie  w ciągu 30 min:  telefonicznie, faksem lub e-mail,   po tym czasie\n" +
+                "  uznajemy zlecenie za przyjęte.\n" +
+                "* Dokumenty przewozowe (potwierdzone oryginały dokumentów: list przewozowy, dowód dostawy) i fakture wraz z nr zlecenia               należy dostarczyć max do 14 dni po rozładunku ( w przypadku dostaw do klienta ŻABKA max do 7 dni po rozładunku ), po tym terminie zastrzegamy  sobie prawo obniżenia frachtu o 10 %,  na fakturze           obowiązkowo powinien być umieszczony nr listu przewozowego.\n" +
+                "* Zastrzegamy sobie możliwość dochodzenia odszkodowania, przekraczającego kary umowne w przypadku nienależytego lub też  \n" +
+                "niewykonania usługi, lub reklamacji klienta       \n" +
+                "* Przestoje pod załadunkiem i rozładunkiem do 24 godzin są wolne od opłat.\n" +
+                "* W przypadku nieterminowego podstawienia pojazdu zastrzegamy możliwość nałożenia kary umownej w wysokości nie mniejszej\n" +
+                "  niż 100 zł z frachtu\n" +
+                "•\tPrzyjmując niniejsze zlecenie Zleceniobiorca akceptuje i przyjmuje powyższe warunki.\n" +
+                "•\tW przypadku odmowy przyjęcia towaru przez odbiorce istnieje mozliwosc zwrotu towaru do miejsca załadunku lub do najbliższego magazynu załadowcy\n" +
+                "Niniejsze zlecenie jest umową o ochronie klienta. Podjęcie jakichkolwiek pertraktacji z klientem jest prawnie zabronione pod rygorem kary finansowej (10.000 EUR) oraz wstrzymaniem wszelkich płatności wobec przewoźnika.\n" +
+                "W sprawach nieuregulowanych obowiązują przepisy Kodeksu Cywilnego. Spory sądowe rozstrzygane będą dla obu Stron w Żywcu.\n");
+        table.addCell(cell);
+    }
+
+    private void addSignaturesFields(Document document) throws DocumentException, IOException {
+        Chunk glue = new Chunk(new VerticalPositionMark());
+        Paragraph p = new Paragraph("Podpis i pieczątka zleceniodawcy", MyFont.getNormalFont());
+        p.setAlignment(Element.ALIGN_BOTTOM);
+        p.add(new Chunk(glue));
+        p.add("Podpis i pieczątka zleceniobiorcy");
+        document.add(p);
+    }
+
+    private void addFooter(Document document) throws IOException, DocumentException {
+        Paragraph p = new Paragraph("\u00a9 2020 Created by Forest Industry S.A.", MyFont.getNormalFont());
+        p.setAlignment(Element.ALIGN_CENTER);
+        document.add(p);
+    }
+
     private PdfPCell createRowWithText(String header, String text) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         cell.setColspan(2);
         setPadding(cell, 2, 5, 5, 5);
         ridBlankSpace(cell);
 
-        cell.addElement(new Phrase(header, MyFont.getBoldFont(12)));
+        cell.addElement(new Phrase(header, MyFont.getBoldFont(10)));
         cell.addElement(new Phrase(text, MyFont.getNormalFont()));
 
         return cell;
+    }
+
+    private String rebuildDateFormat(LocalDateTime localDateTime) {
+        return localDateTime.toString().replace("T", " ");
     }
 
     private void setPadding(PdfPCell cell, int top, int right, int bottom, int left) {
