@@ -24,7 +24,7 @@ public class MyFont {
     public static Font getNormalFont() throws IOException, DocumentException {
         BaseFont bf = BaseFont.createFont("fonts/montserat-regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-        return new Font(bf, 10);
+        return new Font(bf, 8);
     }
 
 }
