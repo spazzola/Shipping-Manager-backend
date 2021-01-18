@@ -28,6 +28,7 @@ public class PdfOrderService  {
     private OrderDao orderDao;
     private OrderMapper orderMapper;
 
+    //TODO add to method parameters Long orderId
     public void generatePdf() throws Exception {
         FontFactory.registerDirectory("src/main/resources/fonts/");
         Order order = orderDao.findById(1L)
@@ -53,7 +54,7 @@ public class PdfOrderService  {
         addPriceInfo(table, orderDto);
         addPaymentInfo(table, orderDto);
         addComment(table, orderDto);
-        addRegulationsInfo(table, orderDto);
+        addRegulationsInfo(table);
 
         document.add(table);
 
@@ -82,7 +83,7 @@ public class PdfOrderService  {
         int spaceIndex = createdDate.indexOf(" ");
         createdDate = createdDate.substring(0, spaceIndex);
 
-        Paragraph header = new Paragraph(orderDto.getCreatedPlace() + " " + createdDate, MyFont.getNormalFont());
+        Paragraph header = new Paragraph(orderDto.getIssuedIn() + " " + createdDate, MyFont.getNormalFont());
         header.setAlignment(Element.ALIGN_RIGHT);
         document.add(header);
         document.add(Chunk.NEWLINE);
@@ -109,7 +110,7 @@ public class PdfOrderService  {
         String address = buildAddress(company);
 
         ridBlankSpace(cell);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
 
         cell.addElement(new Phrase(company.getCompanyName(), MyFont.getNormalFont()));
         cell.addElement(new Phrase(address, MyFont.getNormalFont()));
@@ -141,7 +142,7 @@ public class PdfOrderService  {
     private void addLoadingDateInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         ridBlankSpace(cell);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
 
         cell.addElement((new Phrase("Data i godzina załadunku", MyFont.getBoldFont(10))));
         String loadingDate = buildLoadingDate(loadingInformation);
@@ -153,7 +154,7 @@ public class PdfOrderService  {
     private void addUnloadingDateInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         ridBlankSpace(cell);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
 
         cell.addElement((new Phrase("Data i godzina rozładunku", MyFont.getBoldFont(10))));
         String unloadingDate = buildUnloadingDate(loadingInformation);
@@ -181,7 +182,7 @@ public class PdfOrderService  {
     private void addLoadingPlaceInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         ridBlankSpace(cell);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
 
         cell.addElement(new Phrase("Miejsce załadunku", MyFont.getBoldFont(10)));
         cell.addElement(new Phrase(loadingInformation.getLoadingPlace(), MyFont.getNormalFont()));
@@ -192,7 +193,7 @@ public class PdfOrderService  {
     private void addUnloadingPlaceInfo(PdfPTable table, LoadingInformationDto loadingInformationDto) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         ridBlankSpace(cell);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
 
         cell.addElement((new Phrase("Miejsce rozładunku", MyFont.getBoldFont(10))));
         cell.addElement(new Phrase(loadingInformationDto.getUnloadingPlace(), MyFont.getNormalFont()));
@@ -201,7 +202,7 @@ public class PdfOrderService  {
     }
 
     private void addDescriptionInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = createRowWithText("Opis ładunku", orderDto.getDescription());
+        PdfPCell cell = createRowWithText("Opis ładunku", orderDto.getOrderDescription());
         table.addCell(cell);
     }
 
@@ -263,7 +264,7 @@ public class PdfOrderService  {
         table.addCell(cell);
     }
 
-    private void addRegulationsInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addRegulationsInfo(PdfPTable table) throws IOException, DocumentException {
         PdfPCell cell = createRowWithText("Regulamin", "* Wymagamy aby na powyższe zlecenie podstawiony był samochod:  sprawny, czysty, bez obcych zapachów, posiadający aktualną\n" +
                 "  polise  OC i OCP, natomiast zleceniobiorca posiadał wymagane prawem  zezwolenia na wykonywanie transportu.   \n" +
                 "* Prosimy o sprawdzenie poprawności zlecenia i potwierdzenie  w ciągu 30 min:  telefonicznie, faksem lub e-mail,   po tym czasie\n" +
@@ -299,7 +300,7 @@ public class PdfOrderService  {
     private PdfPCell createRowWithText(String header, String text) throws IOException, DocumentException {
         PdfPCell cell = new PdfPCell();
         cell.setColspan(2);
-        setPadding(cell, 2, 5, 5, 5);
+        setPadding(cell);
         ridBlankSpace(cell);
 
         cell.addElement(new Phrase(header, MyFont.getBoldFont(10)));
@@ -312,11 +313,11 @@ public class PdfOrderService  {
         return localDateTime.toString().replace("T", " ");
     }
 
-    private void setPadding(PdfPCell cell, int top, int right, int bottom, int left) {
-        cell.setPaddingTop(top);
-        cell.setPaddingRight(right);
-        cell.setPaddingBottom(bottom);
-        cell.setPaddingLeft(left);
+    private void setPadding(PdfPCell cell) {
+        cell.setPaddingTop(2);
+        cell.setPaddingRight(5);
+        cell.setPaddingBottom(5);
+        cell.setPaddingLeft(5);
     }
 
     private void ridBlankSpace(PdfPCell cell) {

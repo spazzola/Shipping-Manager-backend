@@ -30,9 +30,9 @@ public class OrderDto {
     private BigDecimal value;
     private BigDecimal weight;
     private String daysTillPayment;
-    private String createdPlace;
+    private String issuedIn;
     private String currency;
-    private String description;
+    private String orderDescription;
     private String comment;
     private String orderNumber;
     private String orderType;

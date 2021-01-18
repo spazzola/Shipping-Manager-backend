@@ -38,11 +38,11 @@ public class Order {
 
     private String daysTillPayment;
 
-    private String createdPlace;
+    private String issuedIn;
 
     private String currency;
 
-    private String description;
+    private String orderDescription;
 
     private String comment;
 
@@ -77,7 +77,7 @@ public class Order {
                 ", paymentDate=" + paymentDate +
                 ", value=" + value +
                 ", weight=" + weight +
-                ", description='" + description + '\'' +
+                ", orderDescription='" + orderDescription + '\'' +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", orderType='" + orderType + '\'' +
                 ", isInvoiceCreated=" + isInvoiceCreated +
