@@ -17,6 +17,7 @@ public class BankAccountMapper {
                 .id(bankAccount.getId())
                 .accountName(bankAccount.getAccountName())
                 .accountNumber(bankAccount.getAccountNumber())
+                .type(bankAccount.getType())
                 .build();
     }
 
@@ -35,6 +36,7 @@ public class BankAccountMapper {
                     .id(bankAccountDto.getId())
                     .accountName(bankAccountDto.getAccountName())
                     .accountNumber(bankAccountDto.getAccountNumber())
+                    .type(bankAccountDto.getType())
                     .build());
         }
         return bankAccounts;
@@ -49,6 +51,7 @@ public class BankAccountMapper {
                     .id(bankAccountDto.getId())
                     .accountName(bankAccountDto.getAccountName())
                     .accountNumber(bankAccountDto.getAccountNumber())
+                    .type(bankAccountDto.getType())
                     .company(company)
                     .build());
         }

@@ -14,5 +14,6 @@ public class BankAccountDto {
     private Long id;
     private String accountName;
     private String accountNumber;
+    private String type;
 
 }

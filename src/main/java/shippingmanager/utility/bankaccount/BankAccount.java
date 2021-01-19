@@ -25,6 +25,8 @@ public class BankAccount {
 
     private String accountNumber;
 
+    private String type;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_fk")
