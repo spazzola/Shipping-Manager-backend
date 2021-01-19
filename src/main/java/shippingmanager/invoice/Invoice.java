@@ -22,7 +22,13 @@ public class Invoice {
     @Column(name = "invoice_id")
     private Long id;
 
+    private String issuedIn;
+
     private String invoiceNumber;
+
+    private String productName;
+
+    private String paymentMethod;
 
     private LocalDateTime issuedDate;
 
