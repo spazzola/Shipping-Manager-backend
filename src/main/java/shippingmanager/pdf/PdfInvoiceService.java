@@ -25,6 +25,7 @@ import shippingmanager.company.Company;
 import shippingmanager.invoice.Invoice;
 import shippingmanager.invoice.InvoiceDao;
 import shippingmanager.order.Order;
+import shippingmanager.utility.bankaccount.BankAccount;
 import shippingmanager.utility.phonenumber.PhoneNumber;
 
 import java.io.FileOutputStream;
@@ -130,6 +131,7 @@ public class PdfInvoiceService {
         addMerchantsHeaders(table, "Sprzedawca");
         addMerchantsHeaders(table, "Nabywca");
 
+        //TODO switch givenBy with receivedBy?
         addMerchantInfo(table, order.getGivenBy());
         addMerchantInfo(table, order.getReceivedBy());
 
@@ -162,11 +164,16 @@ public class PdfInvoiceService {
         paragraph.add("ul. " + company.getAddress().getStreet() + " " + company.getAddress().getHouseNumber() + "\n");
         paragraph.add(company.getAddress().getPostalCode() + " " + company.getAddress().getCity() + "\n");
         paragraph.add("NIP: " + company.getNip() + "\n");
-        paragraph.add("email: " + company.getEmail() + "\n");
+        paragraph.add("Email: " + company.getEmail() + "\n");
 
         for (PhoneNumber phoneNumber : company.getPhoneNumbers()) {
             Text phone = new Text(phoneNumber.getType() + ": " + phoneNumber.getNumber() + "\n");
             paragraph.add(phone);
+        }
+
+        for (BankAccount bankAccount : company.getBankAccounts()) {
+            paragraph.add("Bank: " + bankAccount.getAccountName() + "\n");
+            paragraph.add("Nr konta: " + bankAccount.getAccountNumber() + "\n");
         }
 
         paragraph.setFont(MyFont.getRegularFont());
