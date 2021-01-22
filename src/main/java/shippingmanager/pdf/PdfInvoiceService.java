@@ -336,6 +336,41 @@ public class PdfInvoiceService {
         table.addCell(totalValueWithTax);
     }
 
+    private void addPaymentAndFinalValuesInfo(Table table, Invoice invoice) throws IOException {
+        table.setMarginTop(10f);
+        addFinalValuesInfo(table, invoice);
+        addPaymentInfo(table, invoice);
+    }
+
+    private void addFinalValuesInfo(Table table, Invoice invoice) throws IOException {
+        Cell cell = new Cell();
+        Table fourthTable = new Table(4);
+
+        addHeaderCellsToFourthTable(fourthTable);
+        addDescriptionCellsToFourthTable(fourthTable, invoice);
+        addSummarizeDescription(fourthTable, invoice);
+
+        cell.add(fourthTable);
+        cell.setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+    }
+
+    private void addPaymentInfo(Table table, Invoice invoice) throws IOException {
+        Color white = Color.WHITE;
+
+        Cell cell = new Cell();
+        Table fifthTable = new Table(2);
+
+        addFirstRow(fifthTable, invoice, white);
+        addSecondRow(fifthTable, invoice, white);
+        addThirdRow(fifthTable, invoice, white);
+        addFourthRow(fifthTable, invoice, white);
+
+        cell.add(fifthTable);
+        cell.setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+    }
+
     private void addFirstRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
         PdfFont boldFont = MyFont.getBolderFont();
@@ -389,41 +424,6 @@ public class PdfInvoiceService {
         Cell cell = createCell(toPayment, boldFont, color, TextAlignment.CENTER, 2);
         cell.setUnderline();
         cell.setFontSize(12);
-        cell.setBorder(Border.NO_BORDER);
-        table.addCell(cell);
-    }
-
-    private void addPaymentAndFinalValuesInfo(Table table, Invoice invoice) throws IOException {
-        table.setMarginTop(10f);
-        addFinalValuesInfo(table, invoice);
-        addPaymentInfo(table, invoice);
-    }
-
-    private void addFinalValuesInfo(Table table, Invoice invoice) throws IOException {
-        Cell cell = new Cell();
-        Table fourthTable = new Table(4);
-
-        addHeaderCellsToFourthTable(fourthTable);
-        addDescriptionCellsToFourthTable(fourthTable, invoice);
-        addSummarizeDescription(fourthTable, invoice);
-
-        cell.add(fourthTable);
-        cell.setBorder(Border.NO_BORDER);
-        table.addCell(cell);
-    }
-
-    private void addPaymentInfo(Table table, Invoice invoice) throws IOException {
-        Color white = Color.WHITE;
-
-        Cell cell = new Cell();
-        Table fifthTable = new Table(2);
-
-        addFirstRow(fifthTable, invoice, white);
-        addSecondRow(fifthTable, invoice, white);
-        addThirdRow(fifthTable, invoice, white);
-        addFourthRow(fifthTable, invoice, white);
-
-        cell.add(fifthTable);
         cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
     }
