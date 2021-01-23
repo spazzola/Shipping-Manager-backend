@@ -14,7 +14,7 @@ public class ProductMapper {
                 .productName(product.getProductName())
                 .measureUnit(product.getMeasureUnit())
                 .quantity(product.getQuantity())
-                .taxValue(product.getTaxValue())
+                .taxValue(product.getTax())
                 .valueWithTax(product.getValueWithTax())
                 .valueWithoutTax(product.getValueWithoutTax())
                 .build();
@@ -33,7 +33,9 @@ public class ProductMapper {
                 .productName(productDto.getProductName())
                 .measureUnit(productDto.getMeasureUnit())
                 .quantity(productDto.getQuantity())
+                .tax(productDto.getTax())
                 .taxValue(productDto.getTaxValue())
+                .priceWithoutTax(productDto.getPriceWithoutTax())
                 .valueWithTax(productDto.getValueWithTax())
                 .valueWithoutTax(productDto.getValueWithoutTax())
                 .build();

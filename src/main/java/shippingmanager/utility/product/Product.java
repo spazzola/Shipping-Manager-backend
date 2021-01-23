@@ -22,7 +22,9 @@ public class Product {
     private String productName;
     private String measureUnit;
     private BigDecimal quantity;
+    private BigDecimal tax;
     private BigDecimal taxValue;
+    private BigDecimal priceWithoutTax;
     private BigDecimal valueWithTax;
     private BigDecimal valueWithoutTax;
 
