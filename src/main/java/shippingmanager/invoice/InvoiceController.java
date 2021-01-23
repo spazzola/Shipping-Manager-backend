@@ -17,8 +17,14 @@ public class InvoiceController {
     @PostMapping("/createInvoiceToOrder")
     public Invoice createInvoiceToOrder(@RequestBody CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {
 
-        return invoiceService.createInvoiceToOrder(createInvoiceToOrderRequest);
+        return invoiceService.createInvoice(createInvoiceToOrderRequest);
     }
+
+    @PostMapping("createInvoice")
+    public Invoice createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        return invoiceService.createInvoice(createInvoiceRequest);
+    }
+
 
     @PostMapping("/createpdf")
     public void generatePdf() throws Exception {

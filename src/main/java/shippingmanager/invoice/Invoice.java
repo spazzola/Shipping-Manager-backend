@@ -1,12 +1,17 @@
 package shippingmanager.invoice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import shippingmanager.company.Company;
 import shippingmanager.order.Order;
+import shippingmanager.utility.product.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,21 +27,24 @@ public class Invoice {
     @Column(name = "invoice_id")
     private Long id;
 
-    private String issuedIn;
+    protected String issuedIn;
 
     private String invoiceNumber;
 
-    private String productName;
+    protected String paymentMethod;
 
-    private String paymentMethod;
-
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime issuedDate;
 
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime paymentDate;
 
     private BigDecimal valueWithTax;
 
     private BigDecimal valueWithoutTax;
+
+    private BigDecimal paidAmount;
 
     @OneToOne
     @JoinColumn(name = "order_fk")
@@ -46,10 +54,14 @@ public class Invoice {
     @JoinColumn(name = "issued_by_fk")
     private Company issuedBy;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "received_by_fk")
     private Company receivedBy;
 
-    private boolean isPaid;
+    protected boolean isPaid;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }

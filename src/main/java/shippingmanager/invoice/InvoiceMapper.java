@@ -25,7 +25,6 @@ public class InvoiceMapper {
         return InvoiceDto.builder()
                 .invoiceNumber(invoice.getInvoiceNumber())
                 .issuedIn(invoice.getIssuedIn())
-                .productName(invoice.getProductName())
                 .paymentMethod(invoice.getPaymentMethod())
                 .issuedDate(invoice.getIssuedDate())
                 .paymentDate(invoice.getPaymentDate())
@@ -35,6 +34,7 @@ public class InvoiceMapper {
                 .issuedBy(issuedBy)
                 .receivedBy(receivedBy)
                 .isPaid(invoice.isPaid())
+                .paidAmount(invoice.getPaidAmount())
                 .build();
     }
 

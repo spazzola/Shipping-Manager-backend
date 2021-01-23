@@ -1,37 +1,33 @@
 package shippingmanager.invoice;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import shippingmanager.company.CompanyDto;
-import shippingmanager.order.OrderDto;
+import org.springframework.format.annotation.DateTimeFormat;
+import shippingmanager.company.Company;
+import shippingmanager.utility.product.Product;
+import shippingmanager.utility.product.ProductDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-public class InvoiceDto {
+public class CreateInvoiceRequest {
 
-    private Long id;
     private String issuedIn;
-    private String invoiceNumber;
     private String paymentMethod;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime issuedDate;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime paymentDate;
 
-    private BigDecimal valueWithTax;
-    private BigDecimal valueWithoutTax;
+    private Company receivedBy;
+    private List<ProductDto> products;
     private BigDecimal paidAmount;
-    private OrderDto order;
-    private CompanyDto issuedBy;
-    private CompanyDto receivedBy;
     private boolean isPaid;
 
 }

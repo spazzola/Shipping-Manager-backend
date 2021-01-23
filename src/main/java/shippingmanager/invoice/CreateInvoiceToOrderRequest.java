@@ -3,7 +3,9 @@ package shippingmanager.invoice;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,9 +21,9 @@ public class CreateInvoiceToOrderRequest {
 
     private String issuedIn;
 
-    private String productName;
-
     private String paymentMethod;
+
+    private BigDecimal paidAmount;
 
     private boolean isPaid;
 
