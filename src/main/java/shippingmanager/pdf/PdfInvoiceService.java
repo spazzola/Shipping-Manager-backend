@@ -433,7 +433,7 @@ public class PdfInvoiceService {
 
     private void addFourthRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont boldFont = MyFont.getBolderFont();
-        String toPayment = "Do zapłaty: " + invoice.getValueWithTax() + " " + invoice.getCurrency().toUpperCase();
+        String toPayment = "Do zapłaty: " + invoice.getAmountToPay() + " " + invoice.getCurrency().toUpperCase();
         Cell cell = createCell(toPayment, boldFont, color, TextAlignment.CENTER, 2);
         cell.setUnderline();
         cell.setFontSize(12);
@@ -450,7 +450,7 @@ public class PdfInvoiceService {
         cell1.setBorder(Border.NO_BORDER);
         table.addCell(cell1);
 
-        String[] splittedNumber = splitNumber(invoice.getValueWithTax());
+        String[] splittedNumber = splitNumber(invoice.getAmountToPay());
 
         String numberFirstPart = splittedNumber[0];
         String currency = " " + invoice.getCurrency().toUpperCase() + " ";

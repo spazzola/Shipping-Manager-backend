@@ -36,7 +36,7 @@ public class InvoiceMapper {
                 .receivedBy(receivedBy)
                 .isPaid(invoice.isPaid())
                 .paidAmount(invoice.getPaidAmount())
-                .toPay(invoice.getToPay())
+                .amountToPay(invoice.getAmountToPay())
                 .build();
     }
 

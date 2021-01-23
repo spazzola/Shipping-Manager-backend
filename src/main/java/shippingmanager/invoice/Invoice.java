@@ -47,7 +47,7 @@ public class Invoice {
 
     private BigDecimal paidAmount;
 
-    private BigDecimal toPay;
+    private BigDecimal amountToPay;
 
     @OneToOne
     @JoinColumn(name = "order_fk")

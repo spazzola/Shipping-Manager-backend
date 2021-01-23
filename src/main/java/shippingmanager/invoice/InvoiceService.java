@@ -12,7 +12,6 @@ import shippingmanager.utility.product.ProductMapper;
 import shippingmanager.utility.product.ProductService;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.List;
@@ -61,14 +60,15 @@ public class InvoiceService {
                 .isPaid(createInvoiceToOrderRequest.isPaid())
                 .paymentMethod(createInvoiceToOrderRequest.getPaymentMethod())
                 .paidAmount(createInvoiceToOrderRequest.getPaidAmount())
-                .toPay(createInvoiceToOrderRequest.getToPay())
+                .amountToPay(createInvoiceToOrderRequest.getToPay())
                 .build();
 
         for (Product product : products) {
             product.setInvoice(invoice);
         }
 
-        invoice = calculateInvoiceValues(invoice);
+        invoice = calculateAndSetInvoiceValues(invoice);
+        invoice = calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
     }
@@ -91,19 +91,20 @@ public class InvoiceService {
                 .products(products)
                 .paidAmount(createInvoiceRequest.getPaidAmount())
                 .isPaid(createInvoiceRequest.isPaid())
-                .toPay(createInvoiceRequest.getToPay())
+                .amountToPay(createInvoiceRequest.getToPay())
                 .build();
 
         for (Product product : products) {
             product.setInvoice(invoice);
         }
 
-        invoice = calculateInvoiceValues(invoice);
+        invoice = calculateAndSetInvoiceValues(invoice);
+        invoice = calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
     }
 
-    public Invoice calculateInvoiceValues(Invoice invoice) {
+    private Invoice calculateAndSetInvoiceValues(Invoice invoice) {
         BigDecimal valueWithoutTax = new BigDecimal(0);
         BigDecimal valueWithTax = new BigDecimal(0);
 
@@ -114,6 +115,14 @@ public class InvoiceService {
 
         invoice.setValueWithoutTax(valueWithoutTax);
         invoice.setValueWithTax(valueWithTax);
+
+        return invoice;
+    }
+
+    private Invoice calculateAndSetAmountToPay(Invoice invoice) {
+        BigDecimal paidAmount = invoice.getPaidAmount();
+        BigDecimal amountToPay = invoice.getValueWithTax().subtract(paidAmount);
+        invoice.setAmountToPay(amountToPay);
 
         return invoice;
     }

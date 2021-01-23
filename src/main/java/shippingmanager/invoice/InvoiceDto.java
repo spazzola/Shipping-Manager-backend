@@ -28,7 +28,7 @@ public class InvoiceDto {
     private BigDecimal valueWithTax;
     private BigDecimal valueWithoutTax;
     private BigDecimal paidAmount;
-    private BigDecimal toPay;
+    private BigDecimal amountToPay;
     private OrderDto order;
     private CompanyDto issuedBy;
     private CompanyDto receivedBy;
