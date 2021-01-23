@@ -33,18 +33,21 @@ public class Invoice {
 
     protected String paymentMethod;
 
+    private String currency;
+
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime issuedDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime paymentDate;
+    private int daysTillPayment;
 
     private BigDecimal valueWithTax;
 
     private BigDecimal valueWithoutTax;
 
     private BigDecimal paidAmount;
+
+    private BigDecimal toPay;
 
     @OneToOne
     @JoinColumn(name = "order_fk")

@@ -26,8 +26,9 @@ public class InvoiceMapper {
                 .invoiceNumber(invoice.getInvoiceNumber())
                 .issuedIn(invoice.getIssuedIn())
                 .paymentMethod(invoice.getPaymentMethod())
+                .currency(invoice.getCurrency())
                 .issuedDate(invoice.getIssuedDate())
-                .paymentDate(invoice.getPaymentDate())
+                .daysTillPayment(invoice.getDaysTillPayment())
                 .valueWithTax(invoice.getValueWithTax())
                 .valueWithoutTax(invoice.getValueWithoutTax())
                 .order(orderDto)
@@ -35,6 +36,7 @@ public class InvoiceMapper {
                 .receivedBy(receivedBy)
                 .isPaid(invoice.isPaid())
                 .paidAmount(invoice.getPaidAmount())
+                .toPay(invoice.getToPay())
                 .build();
     }
 

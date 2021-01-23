@@ -16,14 +16,15 @@ public class CreateInvoiceToOrderRequest {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime issuedDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime paymentDate;
+    private int daysTillPayment;
 
     private String issuedIn;
 
     private String paymentMethod;
 
     private BigDecimal paidAmount;
+
+    private BigDecimal toPay;
 
     private boolean isPaid;
 
@@ -33,7 +34,6 @@ public class CreateInvoiceToOrderRequest {
         return "CreateInvoiceToOrderRequest{" +
                 "orderId=" + orderId +
                 ", issuedDate=" + issuedDate +
-                ", paymentDate=" + paymentDate +
                 ", isPaid=" + isPaid +
                 '}';
     }

@@ -19,16 +19,16 @@ public class InvoiceDto {
     private String issuedIn;
     private String invoiceNumber;
     private String paymentMethod;
+    private String currency;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime issuedDate;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime paymentDate;
-
+    private int daysTillPayment;
     private BigDecimal valueWithTax;
     private BigDecimal valueWithoutTax;
     private BigDecimal paidAmount;
+    private BigDecimal toPay;
     private OrderDto order;
     private CompanyDto issuedBy;
     private CompanyDto receivedBy;
