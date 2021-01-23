@@ -12,6 +12,7 @@ import shippingmanager.company.CompanyDao;
 import shippingmanager.utility.driver.Driver;
 import shippingmanager.utility.driver.DriverDto;
 import shippingmanager.utility.driver.DriverService;
+import shippingmanager.utility.generalnumber.GeneralNumberService;
 import shippingmanager.utility.loadinginformation.LoadingInformation;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationMapper;
@@ -21,7 +22,6 @@ import shippingmanager.utility.plate.PlateDto;
 
 import javax.management.BadAttributeValueExpException;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -32,6 +32,7 @@ public class OrderService {
     private final OrderDriverService orderDriverService;
     private final CompanyDao companyDao;
     private final LoadingInformationMapper loadingInformationMapper;
+    private final GeneralNumberService generalNumberService;
 
     @Transactional
     public Order createOrder(CreateOrderRequest createOrderRequest) throws BadAttributeValueExpException {
@@ -39,7 +40,7 @@ public class OrderService {
         LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
         List<Driver> drivers = driverService.createDrivers(createOrderRequest);
 
-        String orderNumber = generateOrderNumber(createOrderRequest.getCreatedDate());
+        String orderNumber = generalNumberService.generateNumber(createOrderRequest.getCreatedDate());
 
         Order order = Order.builder()
                 .createdDate(createOrderRequest.getCreatedDate())
@@ -194,7 +195,7 @@ public class OrderService {
         return order;
     }
 
-    private String generateOrderNumber(LocalDateTime localDateTime) {
+    /*private String generateOrderNumber(LocalDateTime localDateTime) {
         Optional<Order> previousOrder = orderDao.findTopByOrderByIdDesc();
         int newNumber;
 
@@ -215,6 +216,6 @@ public class OrderService {
         String result = orderNumber.substring(0, orderNumber.indexOf("/"));
 
         return Integer.valueOf(result);
-    }
+    }*/
 
 }
