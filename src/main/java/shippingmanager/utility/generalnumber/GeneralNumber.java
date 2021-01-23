@@ -1,12 +1,9 @@
-package shippingmanager.utility.generalNumber;
+package shippingmanager.utility.generalnumber;
 
 import lombok.*;
-import org.springframework.stereotype.Service;
-import shippingmanager.order.Order;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Getter
 @Setter

@@ -1,8 +1,7 @@
-package shippingmanager.utility.generalNumber;
+package shippingmanager.utility.generalnumber;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import shippingmanager.order.Order;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +14,7 @@ public class GeneralNumberService {
     private GeneralNumberDao generalNumberDao;
 
     public String generateNumber(LocalDateTime localDateTime) {
+        //TODO look for previous number in particular month (current)
         Optional<GeneralNumber> previousNumber = generalNumberDao.findTopByOrderByIdDesc();
         BigDecimal newNumber;
 

@@ -1,4 +1,4 @@
-package shippingmanager.utility.generalNumber;
+package shippingmanager.utility.generalnumber;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
