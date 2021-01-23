@@ -20,21 +20,25 @@ import org.springframework.stereotype.Service;
 import shippingmanager.company.Company;
 import shippingmanager.invoice.Invoice;
 import shippingmanager.invoice.InvoiceDao;
+import shippingmanager.invoice.InvoiceService;
 import shippingmanager.order.Order;
 import shippingmanager.utility.bankaccount.BankAccount;
 import shippingmanager.utility.numberconverter.NumberConverter;
 import shippingmanager.utility.phonenumber.PhoneNumber;
+import shippingmanager.utility.product.Product;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
 public class PdfInvoiceService {
 
     private final InvoiceDao invoiceDao;
+    private final InvoiceService invoiceService;
 
 
     //TODO add to method parameters Long invoiceId
@@ -58,7 +62,7 @@ public class PdfInvoiceService {
         addInvoiceNumber(document, invoice);
 
         Table secondTable = new Table(2);
-        addGivenAndReceivedByInfo(secondTable, invoice.getOrder());
+        addGivenAndReceivedByInfo(secondTable, invoice.getOrder(), invoice);
         document.add(secondTable);
 
         Table thirdTable = new Table(24);
@@ -84,7 +88,7 @@ public class PdfInvoiceService {
     }
 
     private String generatePdfName(Invoice invoice) {
-        String invoiceNumber = invoice.getOrder().getOrderNumber().replace("/", "-");
+        String invoiceNumber = invoice.getInvoiceNumber().replace("/", "-");
         return "Faktura" + invoiceNumber + ".pdf";
     }
 
@@ -143,15 +147,20 @@ public class PdfInvoiceService {
         document.add(paragraph);
     }
 
-    private void addGivenAndReceivedByInfo(Table table, Order order) throws IOException {
+    private void addGivenAndReceivedByInfo(Table table, Order order, Invoice invoice) throws IOException {
         table.setMarginTop(15);
 
         addMerchantsHeaders(table, "Sprzedawca");
         addMerchantsHeaders(table, "Nabywca");
 
         //TODO switch givenBy with receivedBy?
-        addMerchantInfo(table, order.getGivenBy());
-        addMerchantInfo(table, order.getReceivedBy());
+        if (order != null) {
+            addMerchantInfo(table, order.getGivenBy());
+            addMerchantInfo(table, order.getReceivedBy());
+        } else {
+            addMerchantInfo(table, invoice.getIssuedBy());
+            addMerchantInfo(table, invoice.getReceivedBy());
+        }
 
     }
 
@@ -200,7 +209,11 @@ public class PdfInvoiceService {
         table.setMarginTop(30f);
 
         addHeaderCellsToThirdTable(table);
-        addDescriptionCellsToThirdTable(table, invoice);
+        List <Product> products = invoice.getProducts();
+        for (int i = 0; i < products.size(); i++) {
+            addDescriptionCellsToThirdTable(table, products.get(i), i + 1);
+        }
+
     }
 
     private void addHeaderCellsToThirdTable(Table table) throws IOException {
@@ -250,36 +263,36 @@ public class PdfInvoiceService {
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
     }
 
-    private void addDescriptionCellsToThirdTable(Table table, Invoice invoice) throws IOException {
+    private void addDescriptionCellsToThirdTable(Table table, Product product, int counter) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
         Color white = Color.WHITE;
 
-        Cell counter = createCell("1", regularFont, white, TextAlignment.CENTER, 0);
-        table.addCell(counter);
+        Cell index = createCell(String.valueOf(counter), regularFont, white, TextAlignment.CENTER, 0);
+        table.addCell(index);
 
-        Cell productName = createCell("Usługa transportowa", regularFont, white, TextAlignment.LEFT, 8);
+        Cell productName = createCell(product.getProductName(), regularFont, white, TextAlignment.LEFT, 8);
         table.addCell(productName);
 
-        Cell quantity = createCell("1", regularFont, white, TextAlignment.CENTER, 0);
+        Cell quantity = createCell(String.valueOf(product.getQuantity()), regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(quantity);
 
-        Cell measureUnit = createCell("szt", regularFont, white, TextAlignment.CENTER, 0);
+        Cell measureUnit = createCell(product.getMeasureUnit(), regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(measureUnit);
 
-        Cell priceWithoutTax = createCell(invoice.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
+        Cell priceWithoutTax = createCell(product.getPriceWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(priceWithoutTax);
 
-        Cell percentageTaxValue = createCell("23%", regularFont, white, TextAlignment.CENTER, 0);
+        Cell percentageTaxValue = createCell(product.getTax().toString(), regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(percentageTaxValue);
 
-        Cell totalPriceWithoutTax = createCell(invoice.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
+        Cell totalPriceWithoutTax = createCell(product.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalPriceWithoutTax);
 
-        BigDecimal taxValue = invoice.getValueWithTax().subtract(invoice.getValueWithoutTax());
-        Cell totalTaxValue = createCell(taxValue.toString(), regularFont, white, TextAlignment.RIGHT, 3);
+        //BigDecimal taxValue = invoice.getValueWithTax().subtract(invoice.getValueWithoutTax());
+        Cell totalTaxValue = createCell(product.getTaxValue().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalTaxValue);
 
-        Cell totalValueWithTax = createCell(invoice.getValueWithTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
+        Cell totalValueWithTax = createCell(product.getValueWithTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalValueWithTax);
     }
 
@@ -394,7 +407,7 @@ public class PdfInvoiceService {
         cell1.setBorder(Border.NO_BORDER);
         table.addCell(cell1);
 
-        Long daysTillPayment = Long.valueOf(invoice.getOrder().getDaysTillPayment());
+        int daysTillPayment = invoice.getDaysTillPayment();
         LocalDateTime paymentDay = invoice.getIssuedDate().plusDays(daysTillPayment);
         String formattedPaymentDay = reformatDate(paymentDay);
         String paymentDateInfo = daysTillPayment + " dni\n" + formattedPaymentDay;
@@ -413,14 +426,14 @@ public class PdfInvoiceService {
         cell1.setBorder(Border.NO_BORDER);
         table.addCell(cell1);
 
-        Cell cell2 = createCell("0.00", boldFont, color, TextAlignment.LEFT, 0);
+        Cell cell2 = createCell(invoice.getPaidAmount().toString(), boldFont, color, TextAlignment.LEFT, 0);
         cell2.setBorder(Border.NO_BORDER);
         table.addCell(cell2);
     }
 
     private void addFourthRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont boldFont = MyFont.getBolderFont();
-        String toPayment = "Do zapłaty: " + invoice.getValueWithTax() + " " + invoice.getOrder().getCurrency().toUpperCase();
+        String toPayment = "Do zapłaty: " + invoice.getValueWithTax() + " " + invoice.getCurrency().toUpperCase();
         Cell cell = createCell(toPayment, boldFont, color, TextAlignment.CENTER, 2);
         cell.setUnderline();
         cell.setFontSize(12);
@@ -440,7 +453,7 @@ public class PdfInvoiceService {
         String[] splittedNumber = splitNumber(invoice.getValueWithTax());
 
         String numberFirstPart = splittedNumber[0];
-        String currency = " " + invoice.getOrder().getCurrency() + " ";
+        String currency = " " + invoice.getCurrency().toUpperCase() + " ";
         String pennies = splittedNumber[1] + "/100";
 
         Cell cell2 = createCell(NumberConverter.speakNumber(numberFirstPart) + currency + pennies, boldFont, white, TextAlignment.LEFT, 0);
