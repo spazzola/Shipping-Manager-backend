@@ -40,7 +40,7 @@ public class InvoiceService {
                 .priceWithoutTax(order.getValue())
                 .build());
 
-        products = productService.calculateValues(products);
+        productService.calculateValues(products);
 
         BigDecimal valueWithoutTax = order.getValue();
         BigDecimal valueWithTax = valueWithoutTax.add(valueWithoutTax.multiply(BigDecimal.valueOf(0.23)));
@@ -67,8 +67,8 @@ public class InvoiceService {
             product.setInvoice(invoice);
         }
 
-        invoice = calculateAndSetInvoiceValues(invoice);
-        invoice = calculateAndSetAmountToPay(invoice);
+        calculateAndSetInvoiceValues(invoice);
+        calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
     }
@@ -76,7 +76,7 @@ public class InvoiceService {
     public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
         Company mainCompany = companyDao.findByIsMainCompanyTrue();
         List<Product> products = productMapper.convertFromDto(createInvoiceRequest.getProducts());
-        products = productService.calculateValues(products);
+        productService.calculateValues(products);
         String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
 
         Invoice invoice = Invoice.builder()
@@ -98,13 +98,13 @@ public class InvoiceService {
             product.setInvoice(invoice);
         }
 
-        invoice = calculateAndSetInvoiceValues(invoice);
-        invoice = calculateAndSetAmountToPay(invoice);
+        calculateAndSetInvoiceValues(invoice);
+        calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
     }
 
-    private Invoice calculateAndSetInvoiceValues(Invoice invoice) {
+    private void calculateAndSetInvoiceValues(Invoice invoice) {
         BigDecimal valueWithoutTax = new BigDecimal(0);
         BigDecimal valueWithTax = new BigDecimal(0);
 
@@ -112,19 +112,14 @@ public class InvoiceService {
             valueWithoutTax = valueWithoutTax.add(product.getValueWithoutTax());
             valueWithTax = valueWithTax.add(product.getValueWithTax());
         }
-
         invoice.setValueWithoutTax(valueWithoutTax);
         invoice.setValueWithTax(valueWithTax);
-
-        return invoice;
     }
 
-    private Invoice calculateAndSetAmountToPay(Invoice invoice) {
+    private void calculateAndSetAmountToPay(Invoice invoice) {
         BigDecimal paidAmount = invoice.getPaidAmount();
         BigDecimal amountToPay = invoice.getValueWithTax().subtract(paidAmount);
         invoice.setAmountToPay(amountToPay);
-
-        return invoice;
     }
 
 }
