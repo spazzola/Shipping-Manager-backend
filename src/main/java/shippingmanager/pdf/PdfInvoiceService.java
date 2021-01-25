@@ -22,15 +22,19 @@ import shippingmanager.invoice.Invoice;
 import shippingmanager.invoice.InvoiceDao;
 import shippingmanager.invoice.InvoiceService;
 import shippingmanager.order.Order;
+import shippingmanager.utility.product.ProductService;
+import shippingmanager.utility.taxxinfo.TaxInfo;
 import shippingmanager.utility.bankaccount.BankAccount;
 import shippingmanager.utility.numberconverter.NumberConverter;
 import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.product.Product;
+import shippingmanager.utility.taxxinfo.TaxInfoService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -38,6 +42,8 @@ import java.util.List;
 public class PdfInvoiceService {
 
     private final InvoiceDao invoiceDao;
+    private final ProductService productService;
+    private final TaxInfoService taxInfoService;
     private final InvoiceService invoiceService;
 
 
@@ -209,7 +215,7 @@ public class PdfInvoiceService {
         table.setMarginTop(30f);
 
         addHeaderCellsToThirdTable(table);
-        List <Product> products = invoice.getProducts();
+        List<Product> products = invoice.getProducts();
         for (int i = 0; i < products.size(); i++) {
             addDescriptionCellsToThirdTable(table, products.get(i), i + 1);
         }
@@ -282,18 +288,55 @@ public class PdfInvoiceService {
         Cell priceWithoutTax = createCell(product.getPriceWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(priceWithoutTax);
 
-        Cell percentageTaxValue = createCell(product.getTax().toString(), regularFont, white, TextAlignment.CENTER, 0);
+        Cell percentageTaxValue = createCell(product.getTax().multiply(BigDecimal.valueOf(100)).toString() + "%", regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(percentageTaxValue);
 
         Cell totalPriceWithoutTax = createCell(product.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalPriceWithoutTax);
 
-        //BigDecimal taxValue = invoice.getValueWithTax().subtract(invoice.getValueWithoutTax());
         Cell totalTaxValue = createCell(product.getTaxValue().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalTaxValue);
 
         Cell totalValueWithTax = createCell(product.getValueWithTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(totalValueWithTax);
+    }
+
+    private void addPaymentAndFinalValuesInfo(Table table, Invoice invoice) throws IOException {
+        table.setMarginTop(10f);
+        addFinalValuesInfo(table, invoice);
+        addPaymentInfo(table, invoice);
+    }
+
+    private void addFinalValuesInfo(Table table, Invoice invoice) throws IOException {
+        Cell cell = new Cell();
+        Table fourthTable = new Table(4);
+
+        addHeaderCellsToFourthTable(fourthTable);
+
+        List<Product> productsWithTax23 = productService.getProductWithTax23(invoice.getProducts());
+        List<Product> productsWithTax08 = productService.getProductWithTax08(invoice.getProducts());
+        List<Product> productsWithTax05 = productService.getProductWithTax05(invoice.getProducts());
+
+
+        TaxInfo tax23 = taxInfoService.createTaxInfo(productsWithTax23);
+        TaxInfo tax08 = taxInfoService.createTaxInfo(productsWithTax08);
+        TaxInfo tax05 = taxInfoService.createTaxInfo(productsWithTax05);
+
+        if (tax23 != null) {
+            addDescriptionCellsToFourthTable(fourthTable, tax23);
+        }
+        if (tax08 != null) {
+            addDescriptionCellsToFourthTable(fourthTable, tax08);
+        }
+        if (tax05 != null) {
+            addDescriptionCellsToFourthTable(fourthTable, tax05);
+        }
+
+        addSummarizeDescription(fourthTable, invoice);
+
+        cell.add(fourthTable);
+        cell.setBorder(Border.NO_BORDER);
+        table.addCell(cell);
     }
 
     private void addHeaderCellsToFourthTable(Table table) throws IOException {
@@ -313,21 +356,20 @@ public class PdfInvoiceService {
         table.addCell(totalValueWithTax);
     }
 
-    private void addDescriptionCellsToFourthTable(Table table, Invoice invoice) throws IOException {
+    private void addDescriptionCellsToFourthTable(Table table, TaxInfo taxInfo) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
         Color white = Color.WHITE;
 
-        Cell percentageTaxValue = createCell("23%", regularFont, white, TextAlignment.CENTER, 0);
+        Cell percentageTaxValue = createCell(taxInfo.getTax() + "%", regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(percentageTaxValue);
 
-        Cell priceWithoutTax = createCell(invoice.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 0);
+        Cell priceWithoutTax = createCell(taxInfo.getTotalValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 0);
         table.addCell(priceWithoutTax);
 
-        BigDecimal taxValue = invoice.getValueWithTax().subtract(invoice.getValueWithoutTax());
-        Cell totalTaxValue = createCell(taxValue.toString(), regularFont, white, TextAlignment.RIGHT, 0);
+        Cell totalTaxValue = createCell(taxInfo.getTotalTaxValue().toString(), regularFont, white, TextAlignment.RIGHT, 0);
         table.addCell(totalTaxValue);
 
-        Cell totalValueWithTax = createCell(invoice.getValueWithTax().toString(), regularFont, white, TextAlignment.RIGHT, 0);
+        Cell totalValueWithTax = createCell(taxInfo.getTotalValueWithTax().toString(), regularFont, white, TextAlignment.RIGHT, 0);
         table.addCell(totalValueWithTax);
     }
 
@@ -347,25 +389,6 @@ public class PdfInvoiceService {
 
         Cell totalValueWithTax = createCell(invoice.getValueWithTax().toString(), boldFont, grey, TextAlignment.RIGHT, 0);
         table.addCell(totalValueWithTax);
-    }
-
-    private void addPaymentAndFinalValuesInfo(Table table, Invoice invoice) throws IOException {
-        table.setMarginTop(10f);
-        addFinalValuesInfo(table, invoice);
-        addPaymentInfo(table, invoice);
-    }
-
-    private void addFinalValuesInfo(Table table, Invoice invoice) throws IOException {
-        Cell cell = new Cell();
-        Table fourthTable = new Table(4);
-
-        addHeaderCellsToFourthTable(fourthTable);
-        addDescriptionCellsToFourthTable(fourthTable, invoice);
-        addSummarizeDescription(fourthTable, invoice);
-
-        cell.add(fourthTable);
-        cell.setBorder(Border.NO_BORDER);
-        table.addCell(cell);
     }
 
     private void addPaymentInfo(Table table, Invoice invoice) throws IOException {
@@ -514,6 +537,5 @@ public class PdfInvoiceService {
     private String reformatDate(LocalDateTime date) {
         return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date);
     }
-
 
 }
