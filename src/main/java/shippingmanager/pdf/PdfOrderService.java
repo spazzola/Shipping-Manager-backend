@@ -3,10 +3,23 @@ package shippingmanager.pdf;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.draw.VerticalPositionMark;
+
+import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.border.Border;
+import com.itextpdf.layout.border.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.TextAlignment;
+import com.sun.javafx.font.FontFactory;
 import lombok.AllArgsConstructor;
+import org.dom4j.DocumentException;
 import org.springframework.stereotype.Service;
 import shippingmanager.company.CompanyDto;
 import shippingmanager.order.Order;
@@ -30,22 +43,20 @@ public class PdfOrderService  {
 
     //TODO add to method parameters Long orderId
     public void generatePdf() throws Exception {
-        FontFactory.registerDirectory("src/main/resources/fonts/");
+        PdfFontFactory.registerDirectory("src/main/resources/fonts/");
         Order order = orderDao.findById(1L)
                 .orElseThrow(Exception::new);
         OrderDto orderDto = orderMapper.toDto(order);
 
         String pdfName = generatePdfName(orderDto);
 
-        Document document = new Document(PageSize.A4, 20, 20, 20, 20);
-        PdfWriter.getInstance(document, new FileOutputStream(pdfName));
-
-        document.open();
+        PdfWriter writer = new PdfWriter(pdfName);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
 
         addHeaders(document, orderDto);
 
-        PdfPTable table = new PdfPTable(2);
-        table.setSpacingBefore(20f);
+        Table table = new Table(2);
 
         addCompaniesInfo(table, orderDto);
         addLoadingsInfo(table, orderDto.getLoadingInformation());
@@ -58,11 +69,10 @@ public class PdfOrderService  {
 
         document.add(table);
 
-        document.add(Chunk.NEWLINE);
-        document.add(Chunk.NEWLINE);
-        document.add(Chunk.NEWLINE);
+        Table sixth = new Table(5);
+        addSignaturesFields(sixth);
+        document.add(sixth);
 
-        addSignaturesFields(document);
         addFooter(document);
 
         document.close();
@@ -78,46 +88,58 @@ public class PdfOrderService  {
         addOrderNumberHeader(document, orderDto);
     }
 
-    private void addPlaceAndDateHeader(Document document, OrderDto orderDto) throws IOException, DocumentException {
+    private void addPlaceAndDateHeader(Document document, OrderDto orderDto) throws IOException {
         String createdDate = rebuildDateFormat(orderDto.getCreatedDate());
         int spaceIndex = createdDate.indexOf(" ");
         createdDate = createdDate.substring(0, spaceIndex);
 
-        Paragraph header = new Paragraph(orderDto.getIssuedIn() + " " + createdDate, MyFont.getNormalFont());
-        header.setAlignment(Element.ALIGN_RIGHT);
-        document.add(header);
-        document.add(Chunk.NEWLINE);
-    }
-
-    private void addOrderNumberHeader(Document document, OrderDto orderDto) throws DocumentException, IOException {
-        Paragraph header = new Paragraph("Zlecenie transportowe nr: " + orderDto.getOrderNumber(), MyFont.getBoldFont(16));
-        header.setAlignment(Element.ALIGN_CENTER);
+        Paragraph header = new Paragraph(orderDto.getIssuedIn() + " " + createdDate);
+        header.setFont(MyFont.getRegularFont());
+        header.setTextAlignment(TextAlignment.RIGHT);
         document.add(header);
     }
 
-    private void addCompaniesInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
+    private void addOrderNumberHeader(Document document, OrderDto orderDto) throws IOException {
+        Paragraph header = new Paragraph("Zlecenie transportowe nr: " + orderDto.getOrderNumber());
+        header.setFont(MyFont.getBolderFont());
+        header.setFontSize(16f);
+        header.setTextAlignment(TextAlignment.CENTER);
+        document.add(header);
+    }
 
-        cell.addElement(new Phrase("Zleceniodawca", MyFont.getBoldFont(10)));
+    private void addCompaniesInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+        Paragraph header = new Paragraph("Zleceniodawca");
+        header.setFont(MyFont.getBolderFont());
+        header.setFontSize(10);
+        Cell cell = new Cell();
+        cell.add(header);
         addCompanyInfo(table, cell, orderDto.getGivenBy());
 
-        PdfPCell cell2 = new PdfPCell();
-        cell2.addElement(new Phrase("Zleceniobiorca", MyFont.getBoldFont(10)));
-        addCompanyInfo(table, cell2, orderDto.getReceivedBy());
+        header = new Paragraph("Zleceniobiorca");
+        header.setFont(MyFont.getBolderFont());
+        header.setFontSize(10);
+        cell = new Cell();
+        cell.add(header);
+        addCompanyInfo(table, cell, orderDto.getReceivedBy());
     }
 
-    private void addCompanyInfo(PdfPTable table, PdfPCell cell, CompanyDto company) throws IOException, DocumentException {
+    private void addCompanyInfo(Table table, Cell cell, CompanyDto company) throws IOException, DocumentException {
         String address = buildAddress(company);
 
-        ridBlankSpace(cell);
-        setPadding(cell);
-
-        cell.addElement(new Phrase(company.getCompanyName(), MyFont.getNormalFont()));
-        cell.addElement(new Phrase(address, MyFont.getNormalFont()));
-        cell.addElement(new Phrase("NIP " + company.getNip(), MyFont.getNormalFont()));
+        Paragraph paragraph = new Paragraph();
+        paragraph.add(company.getCompanyName());
+        paragraph.add("\n" + address);
+        paragraph.add("\nNIP " + company.getNip());
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
 
         for (PhoneNumberDto phoneNumber : company.getPhoneNumbers()) {
-            cell.addElement(new Phrase("tel: " + phoneNumber.getNumber(), MyFont.getNormalFont()));
+            paragraph = new Paragraph();
+            paragraph.add(phoneNumber.getType() + ": " + phoneNumber.getNumber());
+            paragraph.setFont(MyFont.getRegularFont());
+            paragraph.setFontSize(9f);
+            cell.add(paragraph);
         }
 
         table.addCell(cell);
@@ -130,7 +152,7 @@ public class PdfOrderService  {
                 + address.getCity();
     }
 
-    private void addLoadingsInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+    private void addLoadingsInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
         addLoadingDateInfo(table, loadingInformation);
         addUnloadingDateInfo(table, loadingInformation);
 
@@ -139,26 +161,35 @@ public class PdfOrderService  {
 
     }
 
-    private void addLoadingDateInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        ridBlankSpace(cell);
-        setPadding(cell);
+    private void addLoadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+        Cell cell = new Cell();
 
-        cell.addElement((new Phrase("Data i godzina załadunku", MyFont.getBoldFont(10))));
+        Paragraph paragraph = new Paragraph("Data i godzina załadunku");
+        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFontSize(10f);
+        cell.add(paragraph);
+
         String loadingDate = buildLoadingDate(loadingInformation);
-        cell.addElement(new Phrase(loadingDate, MyFont.getNormalFont()));
+        paragraph = new Paragraph(loadingDate);
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
 
         table.addCell(cell);
     }
 
-    private void addUnloadingDateInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        ridBlankSpace(cell);
-        setPadding(cell);
+    private void addUnloadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+        Cell cell = new Cell();
+        Paragraph paragraph = new Paragraph("Data i godzina rozładunku");
+        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFontSize(10);
+        cell.add(paragraph);
 
-        cell.addElement((new Phrase("Data i godzina rozładunku", MyFont.getBoldFont(10))));
         String unloadingDate = buildUnloadingDate(loadingInformation);
-        cell.addElement(new Phrase(unloadingDate, MyFont.getNormalFont()));
+        paragraph = new Paragraph(unloadingDate);
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
 
         table.addCell(cell);
     }
@@ -179,36 +210,45 @@ public class PdfOrderService  {
         return result;
     }
 
-    private void addLoadingPlaceInfo(PdfPTable table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        ridBlankSpace(cell);
-        setPadding(cell);
+    private void addLoadingPlaceInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+        Cell cell = new Cell();
+        Paragraph paragraph = new Paragraph("Miejsce załadunku");
+        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFontSize(10f);
+        cell.add(paragraph);
 
-        cell.addElement(new Phrase("Miejsce załadunku", MyFont.getBoldFont(10)));
-        cell.addElement(new Phrase(loadingInformation.getLoadingPlace(), MyFont.getNormalFont()));
+        paragraph = new Paragraph(loadingInformation.getLoadingPlace());
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
 
         table.addCell(cell);
     }
 
-    private void addUnloadingPlaceInfo(PdfPTable table, LoadingInformationDto loadingInformationDto) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        ridBlankSpace(cell);
-        setPadding(cell);
+    private void addUnloadingPlaceInfo(Table table, LoadingInformationDto loadingInformationDto) throws IOException, DocumentException {
+        Cell cell = new Cell();
 
-        cell.addElement((new Phrase("Miejsce rozładunku", MyFont.getBoldFont(10))));
-        cell.addElement(new Phrase(loadingInformationDto.getUnloadingPlace(), MyFont.getNormalFont()));
+        Paragraph paragraph = new Paragraph("Miejsce rozładunku");
+        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFontSize(10f);
+        cell.add(paragraph);
+
+        paragraph = new Paragraph(loadingInformationDto.getUnloadingPlace());
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
         table.addCell(cell);
 
     }
 
-    private void addDescriptionInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = createRowWithText("Opis ładunku", orderDto.getOrderDescription());
+    private void addDescriptionInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+        Cell cell = createRowWithText("Opis ładunku", orderDto.getOrderDescription());
         table.addCell(cell);
     }
 
-    private void addDriverInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addDriverInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
         String driversInfo = buildDriversInfoString(orderDto.getOrderDrivers());
-        PdfPCell cell = createRowWithText("Dane kierowcy", driversInfo);
+        Cell cell = createRowWithText("Dane kierowcy", driversInfo);
         table.addCell(cell);
     }
 
@@ -248,24 +288,24 @@ public class PdfOrderService  {
         return builder.toString();
     }
 
-    private void addComment(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = createRowWithText("Uwagi", orderDto.getComment());
+    private void addComment(Table table, OrderDto orderDto) throws IOException, DocumentException {
+        Cell cell = createRowWithText("Uwagi", orderDto.getComment());
         table.addCell(cell);
     }
 
-    private void addPriceInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
-        PdfPCell cell = createRowWithText("Stawka: ", orderDto.getValue().toString() + orderDto.getCurrency());
+    private void addPriceInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+        Cell cell = createRowWithText("Stawka: ", orderDto.getValue().toString() + orderDto.getCurrency());
         table.addCell(cell);
     }
 
-    private void addPaymentInfo(PdfPTable table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addPaymentInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
         String daysTillPayment = orderDto.getDaysTillPayment() + " dni od otrzymania FV";
-        PdfPCell cell = createRowWithText("Warunku płatności", daysTillPayment);
+        Cell cell = createRowWithText("Warunku płatności", daysTillPayment);
         table.addCell(cell);
     }
 
-    private void addRegulationsInfo(PdfPTable table) throws IOException, DocumentException {
-        PdfPCell cell = createRowWithText("Regulamin", "* Wymagamy aby na powyższe zlecenie podstawiony był samochod:  sprawny, czysty, bez obcych zapachów, posiadający aktualną\n" +
+    private void addRegulationsInfo(Table table) throws IOException, DocumentException {
+        Cell cell = createRowWithText("Regulamin", "* Wymagamy aby na powyższe zlecenie podstawiony był samochod:  sprawny, czysty, bez obcych zapachów, posiadający aktualną\n" +
                 "  polise  OC i OCP, natomiast zleceniobiorca posiadał wymagane prawem  zezwolenia na wykonywanie transportu.   \n" +
                 "* Prosimy o sprawdzenie poprawności zlecenia i potwierdzenie  w ciągu 30 min:  telefonicznie, faksem lub e-mail,   po tym czasie\n" +
                 "  uznajemy zlecenie za przyjęte.\n" +
@@ -282,47 +322,60 @@ public class PdfOrderService  {
         table.addCell(cell);
     }
 
-    private void addSignaturesFields(Document document) throws DocumentException, IOException {
-        Chunk glue = new Chunk(new VerticalPositionMark());
-        Paragraph p = new Paragraph("Podpis i pieczątka zleceniodawcy", MyFont.getNormalFont());
-        p.setAlignment(Element.ALIGN_BOTTOM);
-        p.add(new Chunk(glue));
-        p.add("Podpis i pieczątka zleceniobiorcy");
-        document.add(p);
+    private void addSignaturesFields(Table table) throws IOException {
+        table.setFixedPosition(48f, 30f, 500f);
+        createSignatureCell(table, "Podpisz i pieczątka zleceniodawcy");
+
+        Cell emptyCell = new Cell();
+        emptyCell.setBorder(Border.NO_BORDER);
+        table.addCell(emptyCell);
+
+        createSignatureCell(table, "Podpis i pieczątka zleceniobiorcy");
     }
 
-    private void addFooter(Document document) throws IOException, DocumentException {
-        Paragraph p = new Paragraph("\u00a9 2020 Created by Forest Industry S.A.", MyFont.getNormalFont());
-        p.setAlignment(Element.ALIGN_CENTER);
-        document.add(p);
+    private void createSignatureCell(Table table, String text) throws IOException {
+        Cell cell = new Cell(0, 2);
+        cell.add(text);
+        cell.setFont(MyFont.getRegularFont());
+        cell.setFontSize(8f);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setBorderTop(new SolidBorder(Color.BLACK, 1));
+        cell.setTextAlignment(TextAlignment.CENTER);
+        table.addCell(cell);
     }
 
-    private PdfPCell createRowWithText(String header, String text) throws IOException, DocumentException {
-        PdfPCell cell = new PdfPCell();
-        cell.setColspan(2);
-        setPadding(cell);
-        ridBlankSpace(cell);
+    private void addFooter(Document document) throws IOException {
+        Paragraph paragraph = new Paragraph();
 
-        cell.addElement(new Phrase(header, MyFont.getBoldFont(10)));
-        cell.addElement(new Phrase(text, MyFont.getNormalFont()));
+        Text footer = new Text("\u00a9 2020 Created by Forest Industry S.A.");
+        footer.setFont(MyFont.getRegularFont());
+        footer.setFontSize(8);
+
+        paragraph.add(footer);
+        paragraph.setTextAlignment(TextAlignment.CENTER);
+        paragraph.setFixedPosition(8f, 10f, 580f);
+
+        document.add(paragraph);
+    }
+
+    private Cell createRowWithText(String header, String text) throws IOException, DocumentException {
+        Cell cell = new Cell(0, 2);
+
+        Paragraph paragraph = new Paragraph(header);
+        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFontSize(10f);
+        cell.add(paragraph);
+
+        paragraph = new Paragraph(text);
+        paragraph.setFont(MyFont.getRegularFont());
+        paragraph.setFontSize(9f);
+        cell.add(paragraph);
 
         return cell;
     }
 
     private String rebuildDateFormat(LocalDateTime localDateTime) {
         return localDateTime.toString().replace("T", " ");
-    }
-
-    private void setPadding(PdfPCell cell) {
-        cell.setPaddingTop(2);
-        cell.setPaddingRight(5);
-        cell.setPaddingBottom(5);
-        cell.setPaddingLeft(5);
-    }
-
-    private void ridBlankSpace(PdfPCell cell) {
-        cell.setUseAscender(true);
-        cell.setUseDescender(true);
     }
 
 }
