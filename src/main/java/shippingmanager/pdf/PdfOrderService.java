@@ -15,11 +15,8 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
-import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
-import com.sun.javafx.font.FontFactory;
 import lombok.AllArgsConstructor;
-import org.dom4j.DocumentException;
 import org.springframework.stereotype.Service;
 import shippingmanager.company.CompanyDto;
 import shippingmanager.order.Order;
@@ -32,7 +29,6 @@ import shippingmanager.utility.orderdriver.OrderDriverDto;
 import shippingmanager.utility.phonenumber.PhoneNumberDto;
 import shippingmanager.utility.plate.PlateDto;
 
-import java.io.FileOutputStream;
 
 @AllArgsConstructor
 @Service
@@ -56,22 +52,22 @@ public class PdfOrderService  {
 
         addHeaders(document, orderDto);
 
-        Table table = new Table(2);
+        Table firstTable = new Table(2);
 
-        addCompaniesInfo(table, orderDto);
-        addLoadingsInfo(table, orderDto.getLoadingInformation());
-        addDescriptionInfo(table, orderDto);
-        addDriverInfo(table, orderDto);
-        addPriceInfo(table, orderDto);
-        addPaymentInfo(table, orderDto);
-        addComment(table, orderDto);
-        addRegulationsInfo(table);
+        addCompaniesInfo(firstTable, orderDto);
+        addLoadingsInfo(firstTable, orderDto.getLoadingInformation());
+        addDescriptionInfo(firstTable, orderDto);
+        addDriverInfo(firstTable, orderDto);
+        addPriceInfo(firstTable, orderDto);
+        addPaymentInfo(firstTable, orderDto);
+        addComment(firstTable, orderDto);
+        addRegulationsInfo(firstTable);
 
-        document.add(table);
+        document.add(firstTable);
 
-        Table sixth = new Table(5);
-        addSignaturesFields(sixth);
-        document.add(sixth);
+        Table secondTable = new Table(5);
+        addSignaturesFields(secondTable);
+        document.add(secondTable);
 
         addFooter(document);
 
@@ -83,7 +79,7 @@ public class PdfOrderService  {
         return "Zamówienie" + orderNumber + ".pdf";
     }
 
-    private void addHeaders(Document document, OrderDto orderDto) throws DocumentException, IOException {
+    private void addHeaders(Document document, OrderDto orderDto) throws IOException {
         addPlaceAndDateHeader(document, orderDto);
         addOrderNumberHeader(document, orderDto);
     }
@@ -107,7 +103,7 @@ public class PdfOrderService  {
         document.add(header);
     }
 
-    private void addCompaniesInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addCompaniesInfo(Table table, OrderDto orderDto) throws IOException {
         Paragraph header = new Paragraph("Zleceniodawca");
         header.setFont(MyFont.getBolderFont());
         header.setFontSize(10);
@@ -123,7 +119,7 @@ public class PdfOrderService  {
         addCompanyInfo(table, cell, orderDto.getReceivedBy());
     }
 
-    private void addCompanyInfo(Table table, Cell cell, CompanyDto company) throws IOException, DocumentException {
+    private void addCompanyInfo(Table table, Cell cell, CompanyDto company) throws IOException {
         String address = buildAddress(company);
 
         Paragraph paragraph = new Paragraph();
@@ -152,7 +148,7 @@ public class PdfOrderService  {
                 + address.getCity();
     }
 
-    private void addLoadingsInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+    private void addLoadingsInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         addLoadingDateInfo(table, loadingInformation);
         addUnloadingDateInfo(table, loadingInformation);
 
@@ -161,7 +157,7 @@ public class PdfOrderService  {
 
     }
 
-    private void addLoadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+    private void addLoadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
 
         Paragraph paragraph = new Paragraph("Data i godzina załadunku");
@@ -178,7 +174,7 @@ public class PdfOrderService  {
         table.addCell(cell);
     }
 
-    private void addUnloadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+    private void addUnloadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
         Paragraph paragraph = new Paragraph("Data i godzina rozładunku");
         paragraph.setFont(MyFont.getBolderFont());
@@ -210,7 +206,7 @@ public class PdfOrderService  {
         return result;
     }
 
-    private void addLoadingPlaceInfo(Table table, LoadingInformationDto loadingInformation) throws IOException, DocumentException {
+    private void addLoadingPlaceInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
         Paragraph paragraph = new Paragraph("Miejsce załadunku");
         paragraph.setFont(MyFont.getBolderFont());
@@ -225,7 +221,7 @@ public class PdfOrderService  {
         table.addCell(cell);
     }
 
-    private void addUnloadingPlaceInfo(Table table, LoadingInformationDto loadingInformationDto) throws IOException, DocumentException {
+    private void addUnloadingPlaceInfo(Table table, LoadingInformationDto loadingInformationDto) throws IOException {
         Cell cell = new Cell();
 
         Paragraph paragraph = new Paragraph("Miejsce rozładunku");
@@ -241,12 +237,12 @@ public class PdfOrderService  {
 
     }
 
-    private void addDescriptionInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addDescriptionInfo(Table table, OrderDto orderDto) throws IOException {
         Cell cell = createRowWithText("Opis ładunku", orderDto.getOrderDescription());
         table.addCell(cell);
     }
 
-    private void addDriverInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addDriverInfo(Table table, OrderDto orderDto) throws IOException {
         String driversInfo = buildDriversInfoString(orderDto.getOrderDrivers());
         Cell cell = createRowWithText("Dane kierowcy", driversInfo);
         table.addCell(cell);
@@ -288,23 +284,23 @@ public class PdfOrderService  {
         return builder.toString();
     }
 
-    private void addComment(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addComment(Table table, OrderDto orderDto) throws IOException {
         Cell cell = createRowWithText("Uwagi", orderDto.getComment());
         table.addCell(cell);
     }
 
-    private void addPriceInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addPriceInfo(Table table, OrderDto orderDto) throws IOException {
         Cell cell = createRowWithText("Stawka: ", orderDto.getValue().toString() + orderDto.getCurrency());
         table.addCell(cell);
     }
 
-    private void addPaymentInfo(Table table, OrderDto orderDto) throws IOException, DocumentException {
+    private void addPaymentInfo(Table table, OrderDto orderDto) throws IOException {
         String daysTillPayment = orderDto.getDaysTillPayment() + " dni od otrzymania FV";
         Cell cell = createRowWithText("Warunku płatności", daysTillPayment);
         table.addCell(cell);
     }
 
-    private void addRegulationsInfo(Table table) throws IOException, DocumentException {
+    private void addRegulationsInfo(Table table) throws IOException {
         Cell cell = createRowWithText("Regulamin", "* Wymagamy aby na powyższe zlecenie podstawiony był samochod:  sprawny, czysty, bez obcych zapachów, posiadający aktualną\n" +
                 "  polise  OC i OCP, natomiast zleceniobiorca posiadał wymagane prawem  zezwolenia na wykonywanie transportu.   \n" +
                 "* Prosimy o sprawdzenie poprawności zlecenia i potwierdzenie  w ciągu 30 min:  telefonicznie, faksem lub e-mail,   po tym czasie\n" +
@@ -358,7 +354,7 @@ public class PdfOrderService  {
         document.add(paragraph);
     }
 
-    private Cell createRowWithText(String header, String text) throws IOException, DocumentException {
+    private Cell createRowWithText(String header, String text) throws IOException {
         Cell cell = new Cell(0, 2);
 
         Paragraph paragraph = new Paragraph(header);

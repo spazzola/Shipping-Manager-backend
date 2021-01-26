@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import shippingmanager.company.Company;
 import shippingmanager.invoice.Invoice;
 import shippingmanager.invoice.InvoiceDao;
-import shippingmanager.invoice.InvoiceService;
 import shippingmanager.order.Order;
 import shippingmanager.utility.product.ProductService;
 import shippingmanager.utility.taxxinfo.TaxInfo;
@@ -34,7 +33,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -44,7 +42,6 @@ public class PdfInvoiceService {
     private final InvoiceDao invoiceDao;
     private final ProductService productService;
     private final TaxInfoService taxInfoService;
-    private final InvoiceService invoiceService;
 
 
     //TODO add to method parameters Long invoiceId
@@ -80,13 +77,13 @@ public class PdfInvoiceService {
         addPaymentAndFinalValuesInfo(fourthTable, invoice);
         document.add(fourthTable);
 
-        Table fifth = new Table(2);
-        addPaymentValueInWords(fifth, invoice);
-        document.add(fifth);
+        Table fifthTable = new Table(2);
+        addPaymentValueInWords(fifthTable, invoice);
+        document.add(fifthTable);
 
-        Table sixth = new Table(5);
-        addSignaturesFields(sixth);
-        document.add(sixth);
+        Table sixthTable = new Table(5);
+        addSignaturesFields(sixthTable);
+        document.add(sixthTable);
 
         addFooter(document);
 
