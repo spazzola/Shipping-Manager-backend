@@ -1,6 +1,5 @@
 package shippingmanager.pdf;
 
-import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
