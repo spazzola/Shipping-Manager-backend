@@ -42,6 +42,7 @@ public class PdfInvoiceService {
     private final InvoiceDao invoiceDao;
     private final ProductService productService;
     private final TaxInfoService taxInfoService;
+    private final PdfService pdfService;
 
 
     //TODO add to method parameters Long invoiceId
@@ -82,10 +83,12 @@ public class PdfInvoiceService {
         document.add(fifthTable);
 
         Table sixthTable = new Table(5);
-        addSignaturesFields(sixthTable);
+        pdfService.addSignaturesFields(sixthTable,
+                "Osoba upoważniona do odbioru",
+                "Osoba upoważniona do wystawienia)");
         document.add(sixthTable);
 
-        addFooter(document);
+        pdfService.addFooter(document);
 
         document.close();
     }
@@ -107,7 +110,7 @@ public class PdfInvoiceService {
     private void addIssuedDateAndPlace(Table table, Invoice invoice) throws IOException {
         Cell cell = new Cell();
 
-        String formattedDate = reformatDate(invoice.getIssuedDate());
+        String formattedDate = pdfService.reformatDate(invoice.getIssuedDate(), false);
 
         Paragraph placeParagraph = addToCellIssuedInfo("Miejsce wystawienia: ", invoice.getIssuedIn());
         Paragraph dateParagraph = addToCellIssuedInfo("Data wystawienia: ", formattedDate);
@@ -429,7 +432,7 @@ public class PdfInvoiceService {
 
         int daysTillPayment = invoice.getDaysTillPayment();
         LocalDateTime paymentDay = invoice.getIssuedDate().plusDays(daysTillPayment);
-        String formattedPaymentDay = reformatDate(paymentDay);
+        String formattedPaymentDay = pdfService.reformatDate(paymentDay, false);
         String paymentDateInfo = daysTillPayment + " dni\n" + formattedPaymentDay;
 
         Cell cell2 = createCell(paymentDateInfo, boldFont, color, TextAlignment.LEFT, 0);
@@ -492,47 +495,6 @@ public class PdfInvoiceService {
         result[1] = stringNumber.substring(dotIndex).replace(".", "");
 
         return result;
-    }
-
-    private void addSignaturesFields(Table table) throws IOException {
-        table.setFixedPosition(48f, 30f, 500f);
-        createSignatureCell(table, "Osoba upoważniona do odbioru");
-
-        Cell emptyCell = new Cell();
-        emptyCell.setBorder(Border.NO_BORDER);
-        table.addCell(emptyCell);
-
-        createSignatureCell(table, "Osoba upoważniona do wystawienia");
-
-    }
-
-    private void createSignatureCell(Table table, String text) throws IOException {
-        Cell cell = new Cell(0, 2);
-        cell.add(text);
-        cell.setFont(MyFont.getRegularFont());
-        cell.setFontSize(8f);
-        cell.setBorder(Border.NO_BORDER);
-        cell.setBorderTop(new SolidBorder(Color.BLACK, 1));
-        cell.setTextAlignment(TextAlignment.CENTER);
-        table.addCell(cell);
-    }
-
-    private void addFooter(Document document) throws IOException {
-        Paragraph paragraph = new Paragraph();
-
-        Text footer = new Text("\u00a9 2020 Created by Forest Industry S.A.");
-        footer.setFont(MyFont.getRegularFont());
-        footer.setFontSize(8);
-
-        paragraph.add(footer);
-        paragraph.setTextAlignment(TextAlignment.CENTER);
-        paragraph.setFixedPosition(8f, 10f, 580f);
-
-        document.add(paragraph);
-    }
-
-    private String reformatDate(LocalDateTime date) {
-        return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date);
     }
 
 }
