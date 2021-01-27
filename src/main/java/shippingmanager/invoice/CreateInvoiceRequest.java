@@ -27,7 +27,7 @@ public class CreateInvoiceRequest {
     private Company receivedBy;
     private List<ProductDto> products;
     private BigDecimal paidAmount;
-    private BigDecimal toPay;
+    private BigDecimal amountToPay;
     private boolean isPaid;
 
 }

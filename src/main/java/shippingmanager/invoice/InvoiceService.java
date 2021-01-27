@@ -2,6 +2,7 @@ package shippingmanager.invoice;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shippingmanager.company.Company;
 import shippingmanager.company.CompanyDao;
 import shippingmanager.order.Order;
@@ -28,9 +29,11 @@ public class InvoiceService {
     private final ProductService productService;
 
 
+    @Transactional
     public Invoice createInvoice(CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {
         Order order = orderDao.findById(createInvoiceToOrderRequest.getOrderId())
                 .orElseThrow(NoSuchElementException::new);
+        Company mainCompany = companyDao.findByIsMainCompanyTrue();
 
         List<Product> products = Collections.singletonList(Product.builder()
                 .productName("Usługa transportowa")
@@ -55,7 +58,7 @@ public class InvoiceService {
                 .valueWithTax(valueWithTax)
                 .order(order)
                 .products(products)
-                .issuedBy(order.getReceivedBy())
+                .issuedBy(mainCompany)
                 .receivedBy(order.getGivenBy())
                 .isPaid(createInvoiceToOrderRequest.isPaid())
                 .paymentMethod(createInvoiceToOrderRequest.getPaymentMethod())
@@ -63,9 +66,7 @@ public class InvoiceService {
                 .amountToPay(createInvoiceToOrderRequest.getToPay())
                 .build();
 
-        for (Product product : products) {
-            product.setInvoice(invoice);
-        }
+        setProductsToInvoice(products, invoice);
 
         calculateAndSetInvoiceValues(invoice);
         calculateAndSetAmountToPay(invoice);
@@ -73,6 +74,7 @@ public class InvoiceService {
         return invoiceDao.save(invoice);
     }
 
+    @Transactional
     public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
         Company mainCompany = companyDao.findByIsMainCompanyTrue();
         List<Product> products = productMapper.convertFromDto(createInvoiceRequest.getProducts());
@@ -91,17 +93,21 @@ public class InvoiceService {
                 .products(products)
                 .paidAmount(createInvoiceRequest.getPaidAmount())
                 .isPaid(createInvoiceRequest.isPaid())
-                .amountToPay(createInvoiceRequest.getToPay())
+                .amountToPay(createInvoiceRequest.getAmountToPay())
                 .build();
 
-        for (Product product : products) {
-            product.setInvoice(invoice);
-        }
+        setProductsToInvoice(products, invoice);
 
         calculateAndSetInvoiceValues(invoice);
         calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
+    }
+
+    private void setProductsToInvoice(List<Product> products, Invoice invoice) {
+        for (Product product : products) {
+            product.setInvoice(invoice);
+        }
     }
 
     private void calculateAndSetInvoiceValues(Invoice invoice) {
