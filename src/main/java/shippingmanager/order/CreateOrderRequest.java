@@ -21,10 +21,10 @@ public class CreateOrderRequest {
 
     private BigDecimal value;
     private BigDecimal weight;
-    private String daysTillPayment;
-    private String createdPlace;
+    private int daysTillPayment;
+    private String issuedIn;
     private String currency;
-    private String description;
+    private String orderDescription;
     private String comment;
     private String orderType;
     private Long givenById;

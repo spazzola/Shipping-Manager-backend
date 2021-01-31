@@ -48,16 +48,16 @@ public class OrderService {
                 .value(createOrderRequest.getValue())
                 .weight(createOrderRequest.getWeight())
                 .daysTillPayment(createOrderRequest.getDaysTillPayment())
-                .issuedIn(createOrderRequest.getCreatedPlace())
+                .issuedIn(createOrderRequest.getIssuedIn())
                 .currency(createOrderRequest.getCurrency())
-                .orderDescription(createOrderRequest.getDescription())
+                .orderDescription(createOrderRequest.getOrderDescription())
                 .comment(createOrderRequest.getComment())
                 .orderType(createOrderRequest.getOrderType())
                 .orderNumber(orderNumber)
                 .loadingInformation(loadingInformation)
                 .build();
 
-        order = appendCompanies(order, createOrderRequest);
+        appendCompanies(order, createOrderRequest);
 
         List<OrderDriver> orderDrivers = orderDriverService.createOrderDrivers(drivers, order);
         order.setOrderDrivers(orderDrivers);
@@ -84,9 +84,9 @@ public class OrderService {
             exceptionMessage += "Bad value of merchantTypes: " + "givenById: " + createOrderRequest.getGivenById() +
                     " receivedById: " + createOrderRequest.getReceivedById() + " ";
         }
-        /*if (areInvalidDrivers(createOrderRequest)) {
+        if (areInvalidDrivers(createOrderRequest)) {
             exceptionMessage += "Bad value of drivers: " + createOrderRequest.getDrivers() + " ";
-        }*/
+        }
         if (isInvalidLoadingInformation(createOrderRequest.getLoadingInformation())) {
             exceptionMessage += "Bad value of loadingInformation: " + createOrderRequest.getLoadingInformation();
         }
@@ -135,17 +135,7 @@ public class OrderService {
             if (driver.getSurname() == null || driver.getSurname().equals("")) {
                 return true;
             }
-            if (driver.getPlates() == null || driver.getPlates().size() == 0) {
-                return true;
-            } else if (driver.getPlates().size() > 0) {
-                for (PlateDto plate : driver.getPlates()) {
-                    if (plate.getPlateNumber().equals("")) {
-                        return true;
-                    }
-                }
-            }
         }
-
         return false;
     }
 
@@ -194,28 +184,5 @@ public class OrderService {
         }
         return order;
     }
-
-    /*private String generateOrderNumber(LocalDateTime localDateTime) {
-        Optional<Order> previousOrder = orderDao.findTopByOrderByIdDesc();
-        int newNumber;
-
-        if (previousOrder.isPresent()) {
-            newNumber = extractOrderNumber(previousOrder.get()) + 1;
-        } else {
-            newNumber = 1;
-        }
-
-        int month = localDateTime.getMonthValue();
-        int year = localDateTime.getYear();
-
-        return newNumber + "/" + month + "/" + year;
-    }
-
-    private int extractOrderNumber(Order order) {
-        String orderNumber = order.getOrderNumber();
-        String result = orderNumber.substring(0, orderNumber.indexOf("/"));
-
-        return Integer.valueOf(result);
-    }*/
 
 }

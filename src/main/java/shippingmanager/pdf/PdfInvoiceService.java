@@ -11,7 +11,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
-import com.itextpdf.layout.border.SolidBorder;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
@@ -32,7 +31,6 @@ import shippingmanager.utility.taxxinfo.TaxInfoService;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @AllArgsConstructor
@@ -125,7 +123,7 @@ public class PdfInvoiceService {
         Paragraph paragraph = new Paragraph();
 
         Text textHeader = new Text(header);
-        textHeader.setFont(MyFont.getBolderFont());
+        textHeader.setFont(MyFont.getBoldFont());
         textHeader.setFontSize(8);
         paragraph.add(textHeader);
 
@@ -143,7 +141,7 @@ public class PdfInvoiceService {
         Paragraph paragraph = new Paragraph();
 
         Text invoiceNumber = new Text("Faktura VAT nr: " + invoice.getInvoiceNumber());
-        invoiceNumber.setFont(MyFont.getBolderFont());
+        invoiceNumber.setFont(MyFont.getBoldFont());
         invoiceNumber.setFontSize(20);
 
         paragraph.add(invoiceNumber);
@@ -174,7 +172,7 @@ public class PdfInvoiceService {
         Cell cell = new Cell();
         Paragraph paragraph = new Paragraph();
         paragraph.add(header);
-        paragraph.setFont(MyFont.getBolderFont());
+        paragraph.setFont(MyFont.getBoldFont());
         cell.add(paragraph);
         cell.setBorderTop(Border.NO_BORDER);
         cell.setBorderLeft(Border.NO_BORDER);
@@ -223,7 +221,7 @@ public class PdfInvoiceService {
     }
 
     private void addHeaderCellsToThirdTable(Table table) throws IOException {
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
         Color grey = new DeviceRgb(217, 215, 212);
 
         Cell counter = createCell("Lp", boldFont, grey, TextAlignment.CENTER, 0);
@@ -340,7 +338,7 @@ public class PdfInvoiceService {
     }
 
     private void addHeaderCellsToFourthTable(Table table) throws IOException {
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
         Color grey = new DeviceRgb(217, 215, 212);
 
         Cell percentageTaxValue = createCell("Stawka VAT", boldFont, grey, TextAlignment.CENTER, 0);
@@ -374,7 +372,7 @@ public class PdfInvoiceService {
     }
 
     private void addSummarizeDescription(Table table, Invoice invoice) throws IOException {
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
         Color grey = new DeviceRgb(217, 215, 212);
 
         Cell summarize = createCell("Razem", boldFont, grey, TextAlignment.CENTER, 0);
@@ -409,7 +407,7 @@ public class PdfInvoiceService {
 
     private void addFirstRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
 
         Cell cell1 = createCell("Sposób zapłaty: ", regularFont, color, TextAlignment.RIGHT, 0);
         cell1.setBorder(Border.NO_BORDER);
@@ -423,7 +421,7 @@ public class PdfInvoiceService {
 
     private void addSecondRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
 
         Cell cell1 = createCell("Termin zapłaty: ", regularFont, color, TextAlignment.RIGHT, 0);
         cell1.setVerticalAlignment(VerticalAlignment.TOP);
@@ -442,7 +440,7 @@ public class PdfInvoiceService {
 
     private void addThirdRow(Table table, Invoice invoice, Color color) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
 
         Cell cell1 = createCell("Zapłacono: ", regularFont, color, TextAlignment.RIGHT, 0);
         cell1.setVerticalAlignment(VerticalAlignment.TOP);
@@ -455,7 +453,7 @@ public class PdfInvoiceService {
     }
 
     private void addFourthRow(Table table, Invoice invoice, Color color) throws IOException {
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
         String toPayment = "Do zapłaty: " + invoice.getAmountToPay() + " " + invoice.getCurrency().toUpperCase();
         Cell cell = createCell(toPayment, boldFont, color, TextAlignment.CENTER, 2);
         cell.setUnderline();
@@ -466,7 +464,7 @@ public class PdfInvoiceService {
 
     private void addPaymentValueInWords(Table table, Invoice invoice) throws IOException {
         PdfFont regularFont = MyFont.getRegularFont();
-        PdfFont boldFont = MyFont.getBolderFont();
+        PdfFont boldFont = MyFont.getBoldFont();
         Color white = Color.WHITE;
 
         Cell cell1 = createCell("Kwota słownie: ", regularFont, white, TextAlignment.RIGHT, 0);

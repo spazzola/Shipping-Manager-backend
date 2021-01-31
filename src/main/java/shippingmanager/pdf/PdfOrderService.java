@@ -1,22 +1,16 @@
 package shippingmanager.pdf;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.border.Border;
-import com.itextpdf.layout.border.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -98,19 +92,19 @@ public class PdfOrderService  {
     }
 
     private void addOrderNumberHeader(Document document, OrderDto orderDto) throws IOException {
-        Paragraph header = createParagraph("Zlecenie transportowe nr: " + orderDto.getOrderNumber(), MyFont.getBolderFont(), 16f);
+        Paragraph header = createParagraph("Zlecenie transportowe nr: " + orderDto.getOrderNumber(), MyFont.getBoldFont(), 16f);
         header.setTextAlignment(TextAlignment.CENTER);
         document.add(header);
     }
 
     private void addCompaniesInfo(Table table, OrderDto orderDto) throws IOException {
-        Paragraph header = createParagraph("Zleceniodawca", MyFont.getBolderFont(), 10f);
+        Paragraph header = createParagraph("Zleceniodawca", MyFont.getBoldFont(), 10f);
         Cell cell = new Cell();
         cell.add(header);
 
         addCompanyInfo(table, cell, orderDto.getGivenBy());
 
-        header = createParagraph("Zleceniobiorca", MyFont.getBolderFont(), 10f);
+        header = createParagraph("Zleceniobiorca", MyFont.getBoldFont(), 10f);
         cell = new Cell();
         cell.add(header);
 
@@ -157,7 +151,7 @@ public class PdfOrderService  {
     private void addLoadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
 
-        Paragraph paragraph = createParagraph("Data i godzina załadunku", MyFont.getBolderFont(), 10f);
+        Paragraph paragraph = createParagraph("Data i godzina załadunku", MyFont.getBoldFont(), 10f);
         cell.add(paragraph);
 
         String loadingDate = buildLoadingDate(loadingInformation);
@@ -169,11 +163,11 @@ public class PdfOrderService  {
 
     private void addUnloadingDateInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
-        Paragraph paragraph = createParagraph("Data i godzina rozładunku", MyFont.getBolderFont(), 10f);
+        Paragraph paragraph = createParagraph("Data i godzina rozładunku", MyFont.getBoldFont(), 10f);
         cell.add(paragraph);
 
         String unloadingDate = buildUnloadingDate(loadingInformation);
-        paragraph = createParagraph(unloadingDate, MyFont.getBolderFont(), 9f);
+        paragraph = createParagraph(unloadingDate, MyFont.getBoldFont(), 9f);
         cell.add(paragraph);
 
         table.addCell(cell);
@@ -197,7 +191,7 @@ public class PdfOrderService  {
 
     private void addLoadingPlaceInfo(Table table, LoadingInformationDto loadingInformation) throws IOException {
         Cell cell = new Cell();
-        Paragraph paragraph = createParagraph("Miejsce załadunku", MyFont.getBolderFont(), 10f);
+        Paragraph paragraph = createParagraph("Miejsce załadunku", MyFont.getBoldFont(), 10f);
         cell.add(paragraph);
 
         paragraph = createParagraph(loadingInformation.getLoadingPlace(), MyFont.getRegularFont(), 9f);
@@ -209,7 +203,7 @@ public class PdfOrderService  {
     private void addUnloadingPlaceInfo(Table table, LoadingInformationDto loadingInformationDto) throws IOException {
         Cell cell = new Cell();
 
-        Paragraph paragraph = createParagraph("Miejsce rozładunku", MyFont.getBolderFont(), 10f);
+        Paragraph paragraph = createParagraph("Miejsce rozładunku", MyFont.getBoldFont(), 10f);
         cell.add(paragraph);
 
         paragraph = createParagraph(loadingInformationDto.getUnloadingPlace(), MyFont.getRegularFont(), 9f);
@@ -304,7 +298,7 @@ public class PdfOrderService  {
     private Cell createRowWithText(String header, String text) throws IOException {
         Cell cell = new Cell(0, 2);
 
-        Paragraph paragraph = createParagraph(header, MyFont.getBolderFont(), 10f);
+        Paragraph paragraph = createParagraph(header, MyFont.getBoldFont(), 10f);
         cell.add(paragraph);
 
         paragraph = createParagraph(text, MyFont.getRegularFont(), 9f);
