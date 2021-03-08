@@ -49,8 +49,8 @@ public class CompanyMapper {
 
     public Company fromDto(CompanyDto companyDto) {
         Address address = addressMapper.fromDto(companyDto.getAddress());
-        List<BankAccount> bankAccounts = bankAccountMapper.fromDto(companyDto);
-        List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(companyDto);
+        List<BankAccount> bankAccounts = bankAccountMapper.fromDto(companyDto.getBankAccounts());
+        List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(companyDto.getPhoneNumbers());
 
         return Company.builder()
                 .id(companyDto.getId())
