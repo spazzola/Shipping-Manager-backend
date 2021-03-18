@@ -27,8 +27,7 @@ public class BankAccountMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<BankAccount> fromDto(CompanyDto companyDto) {
-        final List<BankAccountDto> bankAccountsDto = companyDto.getBankAccounts();
+    public List<BankAccount> fromDto(List<BankAccountDto> bankAccountsDto) {
         final List<BankAccount> bankAccounts = new ArrayList<>();
 
         for (BankAccountDto bankAccountDto : bankAccountsDto) {
