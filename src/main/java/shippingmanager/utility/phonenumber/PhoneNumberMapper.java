@@ -41,8 +41,7 @@ public class PhoneNumberMapper {
         return phoneNumbers;
     }
 
-    public List<PhoneNumber> fromDto(CompanyDto companyDto) {
-        final List<PhoneNumberDto> phoneNumbersDto = companyDto.getPhoneNumbers();
+    public List<PhoneNumber> fromDto(List<PhoneNumberDto> phoneNumbersDto) {
         final List<PhoneNumber> phoneNumbers = new ArrayList<>();
 
         for (PhoneNumberDto phoneNumberDto : phoneNumbersDto) {
