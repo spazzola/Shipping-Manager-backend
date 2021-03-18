@@ -24,10 +24,11 @@ public class PlateMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<Plate> fromDto(DriverDto driverDto) {
+    public List<Plate> fromDto(List<PlateDto> platesDto) {
         List<Plate> plates = new ArrayList<>();
-        for (PlateDto plateDto : driverDto.getPlates()) {
+        for (PlateDto plateDto : platesDto) {
             plates.add(Plate.builder()
+                    .id(plateDto.getId())
                     .plateNumber(plateDto.getPlateNumber())
                     .build());
         }
