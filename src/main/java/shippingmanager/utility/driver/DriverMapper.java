@@ -49,7 +49,7 @@ public class DriverMapper {
     }
 
     public Driver fromDto(DriverDto driverDto) {
-        List<Plate> plates = plateMapper.fromDto(driverDto);
+        List<Plate> plates = plateMapper.fromDto(driverDto.getPlates());
         List<PhoneNumber> phoneNumbers = phoneNumberMapper.fromDto(driverDto);
 
         return Driver.builder()

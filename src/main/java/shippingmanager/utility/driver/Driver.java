@@ -42,7 +42,7 @@ public class Driver {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", orderDrivers=" + orderDrivers +
+                ", drivers=" + orderDrivers +
                 ", plates=" + plates +
                 ", phoneNumbers=" + phoneNumbers +
                 '}';
