@@ -36,7 +36,7 @@ public class OrderMapper {
                 .daysTillPayment(order.getDaysTillPayment())
                 .issuedIn(order.getIssuedIn())
                 .currency(order.getCurrency())
-                .orderDescription(order.getOrderDescription())
+                .description(order.getDescription())
                 .comment(order.getComment())
                 .orderNumber(order.getOrderNumber())
                 .orderType(order.getOrderType())

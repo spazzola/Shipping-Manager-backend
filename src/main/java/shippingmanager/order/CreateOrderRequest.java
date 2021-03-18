@@ -24,7 +24,7 @@ public class CreateOrderRequest {
     private int daysTillPayment;
     private String issuedIn;
     private String currency;
-    private String orderDescription;
+    private String description;
     private String comment;
     private String orderType;
     private Long givenById;

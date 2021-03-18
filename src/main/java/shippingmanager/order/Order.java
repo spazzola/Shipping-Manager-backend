@@ -23,7 +23,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "invoice_id")
+    @Column(name = "order_id")
     private Long id;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
@@ -42,7 +42,7 @@ public class Order {
 
     private String currency;
 
-    private String orderDescription;
+    private String description;
 
     private String comment;
 
@@ -77,13 +77,13 @@ public class Order {
                 ", paymentDate=" + paymentDate +
                 ", value=" + value +
                 ", weight=" + weight +
-                ", orderDescription='" + orderDescription + '\'' +
+                ", description='" + description + '\'' +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", orderType='" + orderType + '\'' +
                 ", isInvoiceCreated=" + isInvoiceCreated +
                 ", givenBy=" + givenBy +
                 ", receivedBy=" + receivedBy +
-                ", orderDrivers=" + orderDrivers +
+                ", drivers=" + orderDrivers +
                 ", loadingInformation=" + loadingInformation +
                 '}';
     }
