@@ -17,8 +17,8 @@ import shippingmanager.utility.loadinginformation.LoadingInformation;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationMapper;
 import shippingmanager.utility.orderdriver.OrderDriver;
+import shippingmanager.utility.orderdriver.OrderDriverDao;
 import shippingmanager.utility.orderdriver.OrderDriverService;
-import shippingmanager.utility.plate.PlateDto;
 
 import javax.management.BadAttributeValueExpException;
 import java.util.NoSuchElementException;
@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
 public class OrderService {
 
     private final OrderDao orderDao;
+    private final OrderDriverDao orderDriverDao;
     private final DriverService driverService;
     private final OrderDriverService orderDriverService;
     private final CompanyDao companyDao;
@@ -50,10 +51,11 @@ public class OrderService {
                 .daysTillPayment(createOrderRequest.getDaysTillPayment())
                 .issuedIn(createOrderRequest.getIssuedIn())
                 .currency(createOrderRequest.getCurrency())
-                .orderDescription(createOrderRequest.getOrderDescription())
+                .description(createOrderRequest.getDescription())
                 .comment(createOrderRequest.getComment())
                 .orderType(createOrderRequest.getOrderType())
                 .orderNumber(orderNumber)
+                .isInvoiceCreated(false)
                 .loadingInformation(loadingInformation)
                 .build();
 
@@ -63,6 +65,20 @@ public class OrderService {
         order.setOrderDrivers(orderDrivers);
 
         return orderDao.save(order);
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) throws Exception {
+        Order order = orderDao.findById(id)
+                .orElseThrow(Exception::new);
+        OrderDriver orderDriver = orderDriverDao.findByOrderId(order.getId());
+
+        orderDriverDao.delete(orderDriver);
+        orderDao.delete(order);
+    }
+
+    public List<Order> getAllOrders() {
+        return orderDao.findAll();
     }
 
     private void validateOrder(CreateOrderRequest createOrderRequest) throws BadAttributeValueExpException {
