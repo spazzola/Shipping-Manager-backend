@@ -24,6 +24,7 @@ public class OrderDriverMapper {
         List<PhoneNumberDto> phoneNumbersDto = phoneNumberMapper.toDto(orderDriver.getDriver().getPhoneNumbers());
 
         DriverDto driverDto = DriverDto.builder()
+                .id(orderDriver.getDriver().getId())
                 .name(orderDriver.getDriver().getName())
                 .surname(orderDriver.getDriver().getSurname())
                 .plates(platesDto)

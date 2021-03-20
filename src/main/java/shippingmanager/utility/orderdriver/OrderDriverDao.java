@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderDriverDao extends JpaRepository<OrderDriver, Long> {
 
+    OrderDriver findByOrderId(Long id);
+
 }
