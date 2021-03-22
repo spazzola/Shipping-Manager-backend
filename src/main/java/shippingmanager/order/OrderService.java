@@ -56,6 +56,8 @@ public class OrderService {
                 .orderType(createOrderRequest.getOrderType())
                 .orderNumber(orderNumber)
                 .isInvoiceCreated(false)
+                .issuedIn(createOrderRequest.getIssuedIn())
+                .shipper(createOrderRequest.getShipper())
                 .loadingInformation(loadingInformation)
                 .build();
 
@@ -71,6 +73,8 @@ public class OrderService {
     public void deleteOrder(Long id) throws Exception {
         Order order = orderDao.findById(id)
                 .orElseThrow(Exception::new);
+
+        //it returns many of orderdrivers
         OrderDriver orderDriver = orderDriverDao.findByOrderId(order.getId());
 
         orderDriverDao.delete(orderDriver);

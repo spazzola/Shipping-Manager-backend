@@ -29,6 +29,7 @@ public class CreateOrderRequest {
     private String orderType;
     private Long givenById;
     private Long receivedById;
+    private String shipper;
     private List<DriverDto> drivers;
     private LoadingInformationDto loadingInformation;
 

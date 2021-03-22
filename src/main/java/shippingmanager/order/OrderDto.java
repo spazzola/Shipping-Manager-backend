@@ -36,6 +36,7 @@ public class OrderDto {
     private String comment;
     private String orderNumber;
     private String orderType;
+    private String shipper;
     private boolean isInvoiceCreated;
     private CompanyDto givenBy;
     private CompanyDto receivedBy;

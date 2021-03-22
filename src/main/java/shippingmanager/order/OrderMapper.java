@@ -41,6 +41,8 @@ public class OrderMapper {
                 .orderNumber(order.getOrderNumber())
                 .orderType(order.getOrderType())
                 .isInvoiceCreated(order.isInvoiceCreated())
+                .issuedIn(order.getIssuedIn())
+                .shipper(order.getShipper())
                 .givenBy(givenByDto)
                 .receivedBy(receivedByDto)
                 .orderDrivers(orderDriversDto)

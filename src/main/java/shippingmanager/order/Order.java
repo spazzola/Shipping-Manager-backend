@@ -50,6 +50,8 @@ public class Order {
 
     private String orderType;
 
+    private String shipper;
+
     private boolean isInvoiceCreated;
 
     @ManyToOne
