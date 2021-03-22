@@ -30,6 +30,8 @@ public class UserService {
                 .login(userDto.getLogin())
                 .password(encryptedPassword)
                 .email(userDto.getEmail())
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
                 .role(userDto.getRole())
                 .build();
 

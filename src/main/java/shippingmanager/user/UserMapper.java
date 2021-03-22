@@ -13,6 +13,8 @@ public class UserMapper {
                 .login(user.getLogin())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .name(user.getName())
+                .surname(user.getSurname())
                 .role(user.getRole())
                 .build();
     }

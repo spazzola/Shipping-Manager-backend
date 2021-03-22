@@ -10,6 +10,7 @@ import shippingmanager.user.jwt.AuthenticationRequest;
 import shippingmanager.user.jwt.AuthenticationResponse;
 import shippingmanager.user.jwt.JwtUtil;
 import shippingmanager.user.security.SecurityConfiguration;
+import shippingmanager.user.userdetails.MyUserDetails;
 import shippingmanager.user.userdetails.MyUserDetailsService;
 
 
@@ -60,7 +61,7 @@ public class UserController {
 //            throw new RuntimeException("Nieprawidłowe hasło!");
 //        }
 
-        UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getLogin());
+        MyUserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getLogin());
         boolean isMatch = passwordEncoder.matches(authenticationRequest.getPassword(), userDetails.getPassword());
         String jwt;
 
@@ -73,8 +74,9 @@ public class UserController {
 
             //logger.info("Zalogowano");
         }
+        String role = myUserDetailsService.extractRole(userDetails.getAuthorities());
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, role, userDetails.getUsername(), userDetails.getName(), userDetails.getSurname()));
     }
 
 }
