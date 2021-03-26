@@ -19,6 +19,7 @@ public class CreateOrderRequest {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime paymentDate;
 
+    private Long id;
     private BigDecimal value;
     private BigDecimal weight;
     private int daysTillPayment;

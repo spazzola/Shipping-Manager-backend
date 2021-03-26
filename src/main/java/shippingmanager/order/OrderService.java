@@ -11,6 +11,7 @@ import shippingmanager.company.Company;
 import shippingmanager.company.CompanyDao;
 import shippingmanager.utility.driver.Driver;
 import shippingmanager.utility.driver.DriverDto;
+import shippingmanager.utility.driver.DriverMapper;
 import shippingmanager.utility.driver.DriverService;
 import shippingmanager.utility.generalnumber.GeneralNumberService;
 import shippingmanager.utility.loadinginformation.LoadingInformation;
@@ -18,6 +19,7 @@ import shippingmanager.utility.loadinginformation.LoadingInformationDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationMapper;
 import shippingmanager.utility.orderdriver.OrderDriver;
 import shippingmanager.utility.orderdriver.OrderDriverDao;
+import shippingmanager.utility.orderdriver.OrderDriverMapper;
 import shippingmanager.utility.orderdriver.OrderDriverService;
 
 import javax.management.BadAttributeValueExpException;
@@ -30,7 +32,9 @@ public class OrderService {
     private final OrderDao orderDao;
     private final OrderDriverDao orderDriverDao;
     private final DriverService driverService;
+    private final DriverMapper driverMapper;
     private final OrderDriverService orderDriverService;
+    private final OrderDriverMapper orderDriverMapper;
     private final CompanyDao companyDao;
     private final LoadingInformationMapper loadingInformationMapper;
     private final GeneralNumberService generalNumberService;
@@ -39,7 +43,7 @@ public class OrderService {
     public Order createOrder(CreateOrderRequest createOrderRequest) throws BadAttributeValueExpException {
         validateOrder(createOrderRequest);
         LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
-        List<Driver> drivers = driverService.createDrivers(createOrderRequest);
+        List<Driver> drivers = driverService.createAndSaveDriversIfNotExists(createOrderRequest);
 
         String orderNumber = generalNumberService.generateNumber(createOrderRequest.getCreatedDate());
 
@@ -53,7 +57,7 @@ public class OrderService {
                 .currency(createOrderRequest.getCurrency())
                 .description(createOrderRequest.getDescription())
                 .comment(createOrderRequest.getComment())
-                .orderType(createOrderRequest.getOrderType())
+                .orderType(createOrderRequest.getOrderType().toUpperCase())
                 .orderNumber(orderNumber)
                 .isInvoiceCreated(false)
                 .issuedIn(createOrderRequest.getIssuedIn())
@@ -63,8 +67,44 @@ public class OrderService {
 
         appendCompanies(order, createOrderRequest);
 
-        List<OrderDriver> orderDrivers = orderDriverService.createOrderDrivers(drivers, order);
+        List<OrderDriver> orderDrivers = orderDriverService.createAndSaveOrderDrivers(drivers, order);
         order.setOrderDrivers(orderDrivers);
+
+        return orderDao.save(order);
+    }
+
+    @Transactional
+    public Order updateOrder(CreateOrderRequest createOrderRequest) throws Exception {
+        Order order = orderDao.findById(createOrderRequest.getId())
+                .orElseThrow(Exception::new);
+
+        Company givenByCompany = companyDao.findById(createOrderRequest.getGivenById())
+                .orElseThrow(Exception::new);
+
+        Company receivedByCompany = companyDao.findById(createOrderRequest.getReceivedById())
+                .orElseThrow(Exception::new);
+
+        List<Driver> drivers = driverMapper.fromDto(createOrderRequest.getDrivers());
+        List<OrderDriver> orderDrivers = order.getOrderDrivers();
+
+        for (int i = 0; i < orderDrivers.size(); i++) {
+            //orderDrivers.get(i).setDriver(drivers.get(i));
+        }
+
+        LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
+
+        order.setValue(createOrderRequest.getValue());
+        order.setWeight(createOrderRequest.getWeight());
+        order.setIssuedIn(createOrderRequest.getIssuedIn());
+        order.setCurrency(createOrderRequest.getCurrency());
+        order.setDescription(createOrderRequest.getDescription());
+        order.setComment(createOrderRequest.getComment());
+        order.setOrderType(createOrderRequest.getOrderType());
+        order.setGivenBy(givenByCompany);
+        order.setReceivedBy(receivedByCompany);
+        order.setShipper(createOrderRequest.getShipper());
+        order.setOrderDrivers(orderDrivers);
+        order.setLoadingInformation(loadingInformation);
 
         return orderDao.save(order);
     }
@@ -74,12 +114,18 @@ public class OrderService {
         Order order = orderDao.findById(id)
                 .orElseThrow(Exception::new);
 
-        //it returns many of orderdrivers
-        OrderDriver orderDriver = orderDriverDao.findByOrderId(order.getId());
+        List<OrderDriver> orderDrivers = orderDriverDao.findByOrderId(order.getId());
 
-        orderDriverDao.delete(orderDriver);
+        orderDriverDao.deleteAll(orderDrivers);
         orderDao.delete(order);
     }
+
+    @Transactional
+    public Order getOrder(Long id) throws Exception {
+        return orderDao.findById(id)
+                .orElseThrow(Exception::new);
+    }
+
 
     public List<Order> getAllOrders() {
         return orderDao.findAll();

@@ -30,11 +30,25 @@ public class OrderController {
 
     }
 
+    @GetMapping("/getOrder")
+    public OrderDto getOrder(@RequestParam("id") Long id) throws Exception {
+        Order order = orderService.getOrder(id);
+
+        return orderMapper.toDto(order);
+    }
+
     @GetMapping("/getAll")
     public List<OrderDto> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
 
         return orderMapper.toDto(orders);
+    }
+
+    @PutMapping("/update")
+    public OrderDto updateOrder(@RequestBody CreateOrderRequest createOrderRequest) throws Exception {
+        Order order = orderService.updateOrder(createOrderRequest);
+
+        return orderMapper.toDto(order);
     }
 
     @DeleteMapping("/delete")
