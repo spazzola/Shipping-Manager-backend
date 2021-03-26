@@ -21,6 +21,7 @@ import shippingmanager.order.OrderDto;
 import shippingmanager.order.OrderMapper;
 import shippingmanager.utility.address.AddressDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
+import shippingmanager.utility.orderdriver.OrderDriver;
 import shippingmanager.utility.orderdriver.OrderDriverDto;
 import shippingmanager.utility.phonenumber.PhoneNumberDto;
 import shippingmanager.utility.plate.PlateDto;
@@ -214,7 +215,7 @@ public class PdfOrderService  {
     }
 
     private void addDescriptionInfo(Table table, OrderDto orderDto) throws IOException {
-        Cell cell = createRowWithText("Opis ładunku", orderDto.getOrderDescription());
+        Cell cell = createRowWithText("Opis ładunku", orderDto.getDescription());
         table.addCell(cell);
     }
 
@@ -230,15 +231,14 @@ public class PdfOrderService  {
         StringBuilder builder = new StringBuilder();
         for (OrderDriverDto orderDriver : orderDrivers) {
 
-            String plateInfo = buildPlateInfo(orderDriver.getDriver().getPlates());
-            builder.append(plateInfo);
+            String platesInfo = buildPlatesInfo(orderDriver);
+            builder.append(platesInfo);
 
-            builder.append(orderDriver.getDriver().getName()).append(" ");
-            builder.append(orderDriver.getDriver().getSurname()).append(" ");
+            builder.append(orderDriver.getName()).append(" ");
+            builder.append(orderDriver.getSurname()).append(" ");
 
-            for (PhoneNumberDto phoneNumber : orderDriver.getDriver().getPhoneNumbers()) {
-                builder.append(phoneNumber.getNumber());
-            }
+            String phonesInfo = buildPhonesInfo(orderDriver);
+            builder.append(phonesInfo);
 
             if (orderDrivers.size() > 1) {
                 builder.append(", ");
@@ -247,18 +247,27 @@ public class PdfOrderService  {
         return builder.toString();
     }
 
-    private String buildPlateInfo(List<PlateDto> plates) {
-        StringBuilder builder = new StringBuilder();
+    private String buildPlatesInfo(OrderDriverDto orderDriver) {
+        String result = "(";
+        result += orderDriver.getFirstPlate();
 
-        if (plates.size() > 0) {
-            builder.append("(");
-            for (PlateDto plate : plates) {
-                builder.append(plate.getPlateNumber()).append(" ");
-            }
-            builder.append(") ");
+        if (orderDriver.getSecondPlate() != null) {
+            result += " " + orderDriver.getSecondPlate();
+        }
+        result += ") ";
+        return result;
+    }
+
+    private String buildPhonesInfo(OrderDriverDto orderDriver) {
+        String result = "";
+        result += orderDriver.getFirstPhoneNumber();
+
+        if (orderDriver.getSecondPhoneNumber() != null) {
+            result += ", ";
+            result += orderDriver.getSecondPhoneNumber();
         }
 
-        return builder.toString();
+        return result;
     }
 
     private void addComment(Table table, OrderDto orderDto) throws IOException {
