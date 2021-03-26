@@ -20,20 +20,25 @@ public class OrderDriverMapper {
     private PhoneNumberMapper phoneNumberMapper;
 
     public OrderDriverDto toDto(OrderDriver orderDriver) {
-        List<PlateDto> platesDto = plateMapper.toDto(orderDriver.getDriver().getPlates());
-        List<PhoneNumberDto> phoneNumbersDto = phoneNumberMapper.toDto(orderDriver.getDriver().getPhoneNumbers());
+//        List<PlateDto> platesDto = plateMapper.toDto(orderDriver.getDriver().getPlates());
+//        List<PhoneNumberDto> phoneNumbersDto = phoneNumberMapper.toDto(orderDriver.getDriver().getPhoneNumbers());
 
-        DriverDto driverDto = DriverDto.builder()
-                .id(orderDriver.getDriver().getId())
-                .name(orderDriver.getDriver().getName())
-                .surname(orderDriver.getDriver().getSurname())
-                .plates(platesDto)
-                .phoneNumbers(phoneNumbersDto)
-                .build();
+//        DriverDto driverDto = DriverDto.builder()
+//                .id(orderDriver.getDriver().getId())
+//                .name(orderDriver.getDriver().getName())
+//                .surname(orderDriver.getDriver().getSurname())
+//                .plates(platesDto)
+//                .phoneNumbers(phoneNumbersDto)
+//                .build();
 
         return OrderDriverDto.builder()
                 .id(orderDriver.getId())
-                .driver(driverDto)
+                .name(orderDriver.getName())
+                .surname(orderDriver.getSurname())
+                .firstPlate(orderDriver.getFirstPlate())
+                .secondPlate(orderDriver.getSecondPlate())
+                .firstPhoneNumber(orderDriver.getFirstPhoneNumber())
+                .secondPhoneNumber(orderDriver.getSecondPhoneNumber())
                 .build();
     }
 

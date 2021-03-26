@@ -26,8 +26,8 @@ public class Driver {
 
     private String surname;
 
-    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
-    private List<OrderDriver> orderDrivers;
+//    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
+//    private List<OrderDriver> orderDrivers;
 
     @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     private List<Plate> plates;
@@ -42,7 +42,6 @@ public class Driver {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", drivers=" + orderDrivers +
                 ", plates=" + plates +
                 ", phoneNumbers=" + phoneNumbers +
                 '}';

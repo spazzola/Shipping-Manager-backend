@@ -3,8 +3,10 @@ package shippingmanager.utility.orderdriver;
 import lombok.*;
 import shippingmanager.order.Order;
 import shippingmanager.utility.driver.Driver;
+import shippingmanager.utility.plate.Plate;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,9 +25,15 @@ public class OrderDriver {
     @ManyToOne
     @JoinColumn(name = "order_fk")
     private Order order;
+//
+//    @ManyToOne(cascade=CascadeType.ALL)
+//    @JoinColumn(name = "driver_fk")
+//    private Driver driver;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "driver_fk")
-    private Driver driver;
-
+    private String name;
+    private String surname;
+    private String firstPlate;
+    private String secondPlate;
+    private String firstPhoneNumber;
+    private String secondPhoneNumber;
 }

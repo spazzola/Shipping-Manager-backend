@@ -25,4 +25,11 @@ public class Plate {
     @JoinColumn(name = "driver_fk")
     private Driver driver;
 
+    @Override
+    public String toString() {
+        return "Plate{" +
+                "id=" + id +
+                ", plateNumber='" + plateNumber + '\'' +
+                '}';
+    }
 }
