@@ -8,6 +8,8 @@ import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfObject;
+import com.itextpdf.kernel.pdf.PdfOutputStream;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
@@ -28,7 +30,10 @@ import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.product.Product;
 import shippingmanager.utility.taxxinfo.TaxInfoService;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,17 +49,19 @@ public class PdfInvoiceService {
 
 
     //TODO add to method parameters Long invoiceId
-    public void generatePdf() throws Exception {
+    public ByteArrayInputStream generatePdf(Long id) throws Exception {
         PdfFontFactory.registerDirectory("src/main/resources/fonts/");
 
-        Invoice invoice = invoiceDao.findById(1L)
+        Invoice invoice = invoiceDao.findById(id)
                 .orElseThrow(Exception::new);
 
-        String pdfName = generatePdfName(invoice);
-
-        PdfWriter writer = new PdfWriter(pdfName);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.out.println(out.size());
+        PdfWriter writer = new PdfWriter(out);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
+
+
 
         Table firstTable = new Table(2);
         addCompanyLogo(firstTable);
@@ -71,7 +78,6 @@ public class PdfInvoiceService {
         addProductsAndValuesInfo(thirdTable, invoice);
         document.add(thirdTable);
 
-
         Table fourthTable = new Table(2);
         addPaymentAndFinalValuesInfo(fourthTable, invoice);
         document.add(fourthTable);
@@ -83,12 +89,17 @@ public class PdfInvoiceService {
         Table sixthTable = new Table(5);
         pdfService.addSignaturesFields(sixthTable,
                 "Osoba upoważniona do odbioru",
-                "Osoba upoważniona do wystawienia)");
+                "Osoba upoważniona do wystawienia");
         document.add(sixthTable);
 
         pdfService.addFooter(document);
 
         document.close();
+        out.close();
+
+        System.out.println(out.size());
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
     private String generatePdfName(Invoice invoice) {
