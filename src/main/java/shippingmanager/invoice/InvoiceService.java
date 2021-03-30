@@ -71,6 +71,9 @@ public class InvoiceService {
         calculateAndSetInvoiceValues(invoice);
         calculateAndSetAmountToPay(invoice);
 
+        order.setInvoiceCreated(true);
+        orderDao.save(order);
+
         return invoiceDao.save(invoice);
     }
 
