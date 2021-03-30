@@ -1,5 +1,7 @@
 package shippingmanager.pdf;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,15 +38,14 @@ public class PdfOrderService  {
     private final PdfService pdfService;
 
     //TODO add to method parameters Long orderId
-    public void generatePdf(Long id) throws Exception {
+    public ByteArrayInputStream generatePdf(Long id) throws Exception {
         PdfFontFactory.registerDirectory("src/main/resources/fonts/");
         Order order = orderDao.findById(id)
                 .orElseThrow(Exception::new);
         OrderDto orderDto = orderMapper.toDto(order);
 
-        String pdfName = generatePdfName(orderDto);
-
-        PdfWriter writer = new PdfWriter(pdfName);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(out);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
 
@@ -72,6 +73,9 @@ public class PdfOrderService  {
         pdfService.addFooter(document);
 
         document.close();
+        out.close();
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
     private String generatePdfName(OrderDto orderDto) {

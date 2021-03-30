@@ -1,10 +1,14 @@
 package shippingmanager.order;
 
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shippingmanager.pdf.PdfOrderService;
 
 import javax.management.BadAttributeValueExpException;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,10 +28,14 @@ public class OrderController {
         return orderMapper.toDto(order);
     }
 
-    @PostMapping("/createPdf")
-    public void create(@RequestParam(value = "id") Long id) throws Exception {
-        pdfOrderService.generatePdf(id);
+    @GetMapping(value = "/createPdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<InputStreamResource> create(@RequestParam(value = "id") Long id) throws Exception {
+        ByteArrayInputStream orderPdfBytes = pdfOrderService.generatePdf(id);
 
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(orderPdfBytes));
     }
 
     @GetMapping("/getOrder")
