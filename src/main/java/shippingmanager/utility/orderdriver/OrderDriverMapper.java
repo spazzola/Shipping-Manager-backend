@@ -48,4 +48,16 @@ public class OrderDriverMapper {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderDriver> fromDto(List<OrderDriverDto> orderDriversDto) {
+        return orderDriversDto.stream().map(orderDriverDto ->
+                OrderDriver.builder()
+                        .name(orderDriverDto.getName())
+                        .surname(orderDriverDto.getSurname())
+                        .firstPhoneNumber(orderDriverDto.getFirstPhoneNumber())
+                        .secondPhoneNumber(orderDriverDto.getSecondPhoneNumber())
+                        .firstPlate(orderDriverDto.getFirstPlate())
+                        .secondPlate(orderDriverDto.getSecondPlate())
+                        .build()).collect(Collectors.toList());
+    }
+
 }
