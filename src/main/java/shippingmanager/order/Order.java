@@ -63,7 +63,7 @@ public class Order {
     private Company receivedBy;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade=CascadeType.ALL)
     private List<OrderDriver> orderDrivers;
 
     @OneToOne(cascade=CascadeType.ALL)

@@ -74,35 +74,31 @@ public class OrderService {
     }
 
     @Transactional
-    public Order updateOrder(CreateOrderRequest createOrderRequest) throws Exception {
-        Order order = orderDao.findById(createOrderRequest.getId())
+    public Order updateOrder(UpdateOrderRequest updateOrderRequest) throws Exception {
+        Order order = orderDao.findById(updateOrderRequest.getId())
                 .orElseThrow(Exception::new);
 
-        Company givenByCompany = companyDao.findById(createOrderRequest.getGivenById())
+        Company givenByCompany = companyDao.findById(updateOrderRequest.getGivenById())
                 .orElseThrow(Exception::new);
 
-        Company receivedByCompany = companyDao.findById(createOrderRequest.getReceivedById())
+        Company receivedByCompany = companyDao.findById(updateOrderRequest.getReceivedById())
                 .orElseThrow(Exception::new);
 
-        List<Driver> drivers = driverMapper.fromDto(createOrderRequest.getDrivers());
-        List<OrderDriver> orderDrivers = order.getOrderDrivers();
 
-        for (int i = 0; i < orderDrivers.size(); i++) {
-            //orderDrivers.get(i).setDriver(drivers.get(i));
-        }
+        List<OrderDriver> orderDrivers = updateOrderDrivers(order, updateOrderRequest);
 
-        LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
+        LoadingInformation loadingInformation = loadingInformationMapper.fromDto(updateOrderRequest.getLoadingInformation());
 
-        order.setValue(createOrderRequest.getValue());
-        order.setWeight(createOrderRequest.getWeight());
-        order.setIssuedIn(createOrderRequest.getIssuedIn());
-        order.setCurrency(createOrderRequest.getCurrency());
-        order.setDescription(createOrderRequest.getDescription());
-        order.setComment(createOrderRequest.getComment());
-        order.setOrderType(createOrderRequest.getOrderType());
+        order.setValue(updateOrderRequest.getValue());
+        order.setWeight(updateOrderRequest.getWeight());
+        order.setIssuedIn(updateOrderRequest.getIssuedIn());
+        order.setCurrency(updateOrderRequest.getCurrency());
+        order.setDescription(updateOrderRequest.getDescription());
+        order.setComment(updateOrderRequest.getComment());
+        order.setOrderType(updateOrderRequest.getOrderType());
         order.setGivenBy(givenByCompany);
         order.setReceivedBy(receivedByCompany);
-        order.setShipper(createOrderRequest.getShipper());
+        order.setShipper(updateOrderRequest.getShipper());
         order.setOrderDrivers(orderDrivers);
         order.setLoadingInformation(loadingInformation);
 
@@ -249,6 +245,26 @@ public class OrderService {
                 break;
         }
         return order;
+    }
+
+    private List<OrderDriver> updateOrderDrivers(Order order, UpdateOrderRequest updateOrderRequest) {
+        deleteOldOrderDrivers(order);
+        return setNewOrderDrivers(order, updateOrderRequest);
+    }
+
+    private void deleteOldOrderDrivers(Order order) {
+        for (OrderDriver orderDriver : order.getOrderDrivers()) {
+            orderDriverDao.deleteById(orderDriver.getId());
+        }
+    }
+
+    private List<OrderDriver> setNewOrderDrivers(Order order, UpdateOrderRequest updateOrderRequest) {
+        List<OrderDriver> orderDrivers = orderDriverMapper.fromDto(updateOrderRequest.getOrderDrivers());
+        for (OrderDriver orderDriver : orderDrivers) {
+            orderDriver.setOrder(order);
+        }
+
+        return orderDrivers;
     }
 
 }

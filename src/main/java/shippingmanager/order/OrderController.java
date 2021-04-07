@@ -53,8 +53,8 @@ public class OrderController {
     }
 
     @PutMapping("/update")
-    public OrderDto updateOrder(@RequestBody CreateOrderRequest createOrderRequest) throws Exception {
-        Order order = orderService.updateOrder(createOrderRequest);
+    public OrderDto updateOrder(@RequestBody UpdateOrderRequest updateOrderRequest) throws Exception {
+        Order order = orderService.updateOrder(updateOrderRequest);
 
         return orderMapper.toDto(order);
     }
