@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import shippingmanager.company.Company;
+import shippingmanager.company.CompanyDto;
 import shippingmanager.utility.product.Product;
 import shippingmanager.utility.product.ProductDto;
 
@@ -24,7 +25,7 @@ public class CreateInvoiceRequest {
     private LocalDateTime issuedDate;
 
     private int daysTillPayment;
-    private Company receivedBy;
+    private CompanyDto receivedBy;
     private List<ProductDto> products;
     private BigDecimal paidAmount;
     private BigDecimal amountToPay;
