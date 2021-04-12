@@ -1,10 +1,13 @@
 package shippingmanager.invoice;
 
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shippingmanager.company.Company;
 import shippingmanager.company.CompanyDao;
+import shippingmanager.company.CompanyMapper;
+import shippingmanager.company.CompanyService;
 import shippingmanager.order.Order;
 import shippingmanager.order.OrderDao;
 import shippingmanager.utility.generalnumber.GeneralNumberService;
@@ -24,6 +27,8 @@ public class InvoiceService {
     private final OrderDao orderDao;
     private final InvoiceDao invoiceDao;
     private final CompanyDao companyDao;
+    private final CompanyMapper companyMapper;
+    private final CompanyService companyService;
     private final ProductMapper productMapper;
     private final GeneralNumberService generalNumberService;
     private final ProductService productService;
@@ -80,6 +85,9 @@ public class InvoiceService {
     @Transactional
     public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
         Company mainCompany = companyDao.findByIsMainCompanyTrue();
+        Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
+        Company company = companyService.createCompany(createInvoiceRequest.getReceivedBy());
+
         List<Product> products = productMapper.convertFromDto(createInvoiceRequest.getProducts());
         productService.calculateValues(products);
         String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
@@ -92,7 +100,7 @@ public class InvoiceService {
                 .daysTillPayment(createInvoiceRequest.getDaysTillPayment())
                 .issuedDate(createInvoiceRequest.getIssuedDate())
                 .issuedBy(mainCompany)
-                .receivedBy(createInvoiceRequest.getReceivedBy())
+                .receivedBy(company)
                 .products(products)
                 .paidAmount(createInvoiceRequest.getPaidAmount())
                 .isPaid(createInvoiceRequest.isPaid())
@@ -105,6 +113,29 @@ public class InvoiceService {
         calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
+    }
+
+    @Transactional
+    public List<Invoice> getAllInvoices() {
+        return invoiceDao.findAll();
+    }
+
+    @Transactional
+    public Invoice payForInvoice(Long id) throws Exception {
+        Invoice invoice = invoiceDao.findById(id)
+                .orElseThrow(Exception::new);
+
+        invoice.setPaid(true);
+
+        return invoiceDao.save(invoice);
+    }
+
+    @Transactional
+    public void deleteInvoice(Long id) throws Exception {
+        Invoice invoice = invoiceDao.findById(id)
+                .orElseThrow(Exception::new);
+
+        invoiceDao.delete(invoice);
     }
 
     private void setProductsToInvoice(List<Product> products, Invoice invoice) {

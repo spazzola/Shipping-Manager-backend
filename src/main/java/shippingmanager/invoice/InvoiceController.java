@@ -1,5 +1,6 @@
 package shippingmanager.invoice;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
     private final PdfInvoiceService pdfInvoiceService;
+    private final InvoiceMapper invoiceMapper;
 
 
     @PostMapping("/createInvoiceToOrder")
@@ -39,6 +41,25 @@ public class InvoiceController {
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(invoicePdfBytes));
+    }
+
+    @GetMapping("/getAll")
+    public List<InvoiceDto> getAll() {
+        List<Invoice> invoices = invoiceService.getAllInvoices();
+
+        return invoiceMapper.toDto(invoices);
+    }
+
+    @PutMapping("/payForInvoice")
+    public InvoiceDto payForInvoice(@RequestParam("id") Long id) throws Exception {
+        Invoice invoice = invoiceService.payForInvoice(id);
+
+        return invoiceMapper.toDto(invoice);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteInvoice(@RequestParam("id") Long id) throws Exception {
+        invoiceService.deleteInvoice(id);
     }
 
 }

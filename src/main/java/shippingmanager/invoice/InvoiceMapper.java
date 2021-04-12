@@ -18,11 +18,12 @@ public class InvoiceMapper {
     private final CompanyMapper companyMapper;
 
     public InvoiceDto toDto(Invoice invoice) {
-        OrderDto orderDto = orderMapper.toDto(invoice.getOrder());
+        OrderDto orderDto = assignOrderIfExist(invoice);
         CompanyDto issuedBy = companyMapper.toDto(invoice.getIssuedBy());
         CompanyDto receivedBy = companyMapper.toDto(invoice.getReceivedBy());
 
         return InvoiceDto.builder()
+                .id(invoice.getId())
                 .invoiceNumber(invoice.getInvoiceNumber())
                 .issuedIn(invoice.getIssuedIn())
                 .paymentMethod(invoice.getPaymentMethod())
@@ -44,6 +45,14 @@ public class InvoiceMapper {
         return invoices.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private OrderDto assignOrderIfExist(Invoice invoice) {
+        if (invoice.getOrder() != null) {
+            return  orderMapper.toDto(invoice.getOrder());
+        } else {
+            return null;
+        }
     }
 
 }
