@@ -57,7 +57,7 @@ public class Invoice {
     @JoinColumn(name = "issued_by_fk")
     private Company issuedBy;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "received_by_fk")
     private Company receivedBy;
 
