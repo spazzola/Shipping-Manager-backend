@@ -24,16 +24,19 @@ public class CompanyService {
     @Transactional
     public Company createCompany(CompanyDto companyDto) {
         final Company company = companyMapper.fromDto(companyDto);
+        if (!checkIfCompanyExist(company)) {
+            company.setMainCompany(false);
 
-        company.setMainCompany(false);
+            company.getPhoneNumbers().
+                    forEach(phoneNumber -> phoneNumber.setCompany(company));
 
-        company.getPhoneNumbers().
-                forEach(phoneNumber -> phoneNumber.setCompany(company));
+            company.getBankAccounts().
+                    forEach(bankAccount -> bankAccount.setCompany(company));
 
-        company.getBankAccounts().
-                forEach(bankAccount -> bankAccount.setCompany(company));
-
-        return companyDao.save(company);
+            return companyDao.save(company);
+        } else {
+            return companyDao.findByCompanyName(company.getCompanyName());
+        }
     }
 
     @Transactional
@@ -80,6 +83,10 @@ public class CompanyService {
     @Transactional
     public List<Company> getAll() {
         return companyDao.findAll();
+    }
+
+    private boolean checkIfCompanyExist(Company company) {
+        return companyDao.findByCompanyName(company.getCompanyName()) != null;
     }
 
 }
