@@ -41,7 +41,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public List<Product> convertFromDto(List<ProductDto> productDtos) {
+    public List<Product> fromDto(List<ProductDto> productDtos) {
         return productDtos.stream()
                 .map(this::fromDto)
                 .collect(Collectors.toList());

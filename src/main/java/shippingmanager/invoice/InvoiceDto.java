@@ -1,11 +1,13 @@
 package shippingmanager.invoice;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import shippingmanager.company.CompanyDto;
 import shippingmanager.order.OrderDto;
+import shippingmanager.utility.product.ProductDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class InvoiceDto {
     private OrderDto order;
     private CompanyDto issuedBy;
     private CompanyDto receivedBy;
+    private List<ProductDto> products;
     private boolean isPaid;
 
 }

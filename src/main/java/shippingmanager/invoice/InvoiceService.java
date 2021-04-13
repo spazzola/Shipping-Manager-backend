@@ -1,6 +1,5 @@
 package shippingmanager.invoice;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +87,7 @@ public class InvoiceService {
         Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
         Company company = companyService.createCompany(createInvoiceRequest.getReceivedBy());
 
-        List<Product> products = productMapper.convertFromDto(createInvoiceRequest.getProducts());
+        List<Product> products = productMapper.fromDto(createInvoiceRequest.getProducts());
         productService.calculateValues(products);
         String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
 

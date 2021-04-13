@@ -6,6 +6,9 @@ import shippingmanager.company.CompanyDto;
 import shippingmanager.company.CompanyMapper;
 import shippingmanager.order.OrderDto;
 import shippingmanager.order.OrderMapper;
+import shippingmanager.utility.product.Product;
+import shippingmanager.utility.product.ProductDto;
+import shippingmanager.utility.product.ProductMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +19,13 @@ public class InvoiceMapper {
 
     private final OrderMapper orderMapper;
     private final CompanyMapper companyMapper;
+    private final ProductMapper productMapper;
 
     public InvoiceDto toDto(Invoice invoice) {
         OrderDto orderDto = assignOrderIfExist(invoice);
         CompanyDto issuedBy = companyMapper.toDto(invoice.getIssuedBy());
         CompanyDto receivedBy = companyMapper.toDto(invoice.getReceivedBy());
+        List<ProductDto> products = productMapper.toDto(invoice.getProducts());
 
         return InvoiceDto.builder()
                 .id(invoice.getId())
@@ -38,6 +43,7 @@ public class InvoiceMapper {
                 .isPaid(invoice.isPaid())
                 .paidAmount(invoice.getPaidAmount())
                 .amountToPay(invoice.getAmountToPay())
+                .products(products)
                 .build();
     }
 
