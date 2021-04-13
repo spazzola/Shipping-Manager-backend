@@ -64,7 +64,7 @@ public class InvoiceService {
                 .order(order)
                 .products(products)
                 .issuedBy(mainCompany)
-                .receivedBy(order.getGivenBy())
+                .receivedBy(order.getReceivedBy())
                 .isPaid(createInvoiceToOrderRequest.isPaid())
                 .paymentMethod(createInvoiceToOrderRequest.getPaymentMethod())
                 .paidAmount(createInvoiceToOrderRequest.getPaidAmount())
