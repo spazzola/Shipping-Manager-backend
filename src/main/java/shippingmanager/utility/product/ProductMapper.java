@@ -17,6 +17,7 @@ public class ProductMapper {
                 .taxValue(product.getTax())
                 .valueWithTax(product.getValueWithTax())
                 .valueWithoutTax(product.getValueWithoutTax())
+                .priceWithoutTax(product.getPriceWithoutTax())
                 .build();
     }
 
