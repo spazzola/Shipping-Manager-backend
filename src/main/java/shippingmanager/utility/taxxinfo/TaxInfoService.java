@@ -23,7 +23,7 @@ public class TaxInfoService {
                 BigDecimal valueWithoutTax = taxInfo.getTotalValueWithoutTax();
                 valueWithoutTax = valueWithoutTax.add(product.getValueWithoutTax());
                 taxInfo.setTotalValueWithoutTax(valueWithoutTax);
-                taxInfo.setTax(product.getTax().multiply(BigDecimal.valueOf(100)));
+                taxInfo.setTax(product.getTax());
 
                 BigDecimal valueWithTax = taxInfo.getTotalValueWithTax();
                 valueWithTax = valueWithTax.add(product.getValueWithTax());
