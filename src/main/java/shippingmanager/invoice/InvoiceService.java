@@ -43,7 +43,7 @@ public class InvoiceService {
                 .productName("Usługa transportowa")
                 .measureUnit("szt")
                 .quantity(BigDecimal.valueOf(1))
-                .tax(BigDecimal.valueOf(0.23))
+                .tax(BigDecimal.valueOf(23))
                 .priceWithoutTax(order.getValue())
                 .build());
 
