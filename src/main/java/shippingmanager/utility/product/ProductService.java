@@ -1,18 +1,24 @@
 package shippingmanager.utility.product;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@AllArgsConstructor
 @Service
 public class ProductService {
+
+    private final ProductDao productDao;
 
     public List<Product> getProductWithTax23(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(0.23))) {
+            if (product.getTax().equals(BigDecimal.valueOf(23))) {
                 resultList.add(product);
             }
 
@@ -23,7 +29,7 @@ public class ProductService {
     public List<Product> getProductWithTax08(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(0.08))) {
+            if (product.getTax().equals(BigDecimal.valueOf(8))) {
                 resultList.add(product);
             }
 
@@ -34,7 +40,7 @@ public class ProductService {
     public List<Product> getProductWithTax05(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(0.05))) {
+            if (product.getTax().equals(BigDecimal.valueOf(5))) {
                 resultList.add(product);
             }
 
@@ -52,8 +58,18 @@ public class ProductService {
         }
     }
 
+    @Transactional
+    public void deleteProducts(List<ProductDto> productsDto) throws Exception {
+        for (ProductDto productDto : productsDto) {
+            Product product = productDao.findById(productDto.getId())
+                    .orElseThrow(Exception::new);
+            productDao.delete(product);
+        }
+    }
+
     private BigDecimal calculateValueWithTax(BigDecimal valueWithoutTax, BigDecimal tax) {
-        return valueWithoutTax.add(valueWithoutTax.multiply(tax));
+        BigDecimal convertedTaxValue = tax.divide(BigDecimal.valueOf(100));
+        return valueWithoutTax.add(valueWithoutTax.multiply(convertedTaxValue));
     }
 
 }
