@@ -29,9 +29,16 @@ public class InvoiceController {
 
     @PostMapping("createInvoice")
     public Invoice createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        System.out.println(createInvoiceRequest.toString());
         return invoiceService.createInvoice(createInvoiceRequest);
     }
 
+    @PutMapping("/update")
+    public InvoiceDto updateInvoice(@RequestBody UpdateInvoiceRequest updateInvoiceRequest) throws Exception {
+        Invoice invoice = invoiceService.updateInvoice(updateInvoiceRequest);
+
+        return invoiceMapper.toDto(invoice);
+    }
 
     @GetMapping(value = "/createPdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam("id") Long id) throws Exception {
@@ -41,6 +48,13 @@ public class InvoiceController {
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(invoicePdfBytes));
+    }
+
+    @GetMapping("/getInvoice")
+    public InvoiceDto getInvoice(@RequestParam("id") Long id) throws Exception {
+        Invoice invoice = invoiceService.getInvoice(id);
+
+        return invoiceMapper.toDto(invoice);
     }
 
     @GetMapping("/getAll")

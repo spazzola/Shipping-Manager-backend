@@ -3,12 +3,10 @@ package shippingmanager.invoice;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shippingmanager.company.Company;
-import shippingmanager.company.CompanyDao;
-import shippingmanager.company.CompanyMapper;
-import shippingmanager.company.CompanyService;
+import shippingmanager.company.*;
 import shippingmanager.order.Order;
 import shippingmanager.order.OrderDao;
+import shippingmanager.order.UpdateOrderRequest;
 import shippingmanager.utility.generalnumber.GeneralNumberService;
 import shippingmanager.utility.product.Product;
 import shippingmanager.utility.product.ProductMapper;
@@ -84,7 +82,7 @@ public class InvoiceService {
     @Transactional
     public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
         Company mainCompany = companyDao.findByIsMainCompanyTrue();
-        Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
+        //Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
         Company company = companyService.createCompany(createInvoiceRequest.getReceivedBy());
 
         List<Product> products = productMapper.fromDto(createInvoiceRequest.getProducts());
@@ -112,6 +110,33 @@ public class InvoiceService {
         calculateAndSetAmountToPay(invoice);
 
         return invoiceDao.save(invoice);
+    }
+
+    @Transactional
+    public Invoice updateInvoice(UpdateInvoiceRequest updateInvoiceRequest) throws Exception {
+        Invoice invoice = invoiceDao.findById(updateInvoiceRequest.getId())
+                .orElseThrow(Exception::new);
+        Company receivedBy = companyMapper.fromDto(updateInvoiceRequest.getReceivedBy());
+        List<Product> products = productMapper.fromDto(updateInvoiceRequest.getProducts());
+
+        invoice.setInvoiceNumber(updateInvoiceRequest.getInvoiceNumber());
+        invoice.setIssuedIn(updateInvoiceRequest.getIssuedIn());
+        invoice.setPaymentMethod(updateInvoiceRequest.getPaymentMethod());
+        invoice.setCurrency(updateInvoiceRequest.getCurrency());
+        invoice.setIssuedDate(updateInvoiceRequest.getIssuedDate());
+        invoice.setDaysTillPayment(updateInvoiceRequest.getDaysTillPayment());
+        invoice.setReceivedBy(receivedBy);
+        invoice.setProducts(products);
+        invoice.setPaidAmount(updateInvoiceRequest.getPaidAmount());
+        invoice.setPaid(updateInvoiceRequest.isPaid());
+
+        return invoiceDao.save(invoice);
+    }
+
+    @Transactional
+    public Invoice getInvoice(Long id) throws Exception {
+        return invoiceDao.findById(id)
+                .orElseThrow(Exception::new);
     }
 
     @Transactional
