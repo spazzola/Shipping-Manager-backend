@@ -56,7 +56,7 @@ public class PdfInvoiceService {
                 .orElseThrow(Exception::new);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        System.out.println(out.size());
+        //System.out.println(out.size());
         PdfWriter writer = new PdfWriter(out);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
@@ -97,7 +97,7 @@ public class PdfInvoiceService {
         document.close();
         out.close();
 
-        System.out.println(out.size());
+        //System.out.println(out.size());
 
         return new ByteArrayInputStream(out.toByteArray());
     }
@@ -297,7 +297,7 @@ public class PdfInvoiceService {
         Cell priceWithoutTax = createCell(product.getPriceWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);
         table.addCell(priceWithoutTax);
 
-        Cell percentageTaxValue = createCell(product.getTax().multiply(BigDecimal.valueOf(100)).toString() + "%", regularFont, white, TextAlignment.CENTER, 0);
+        Cell percentageTaxValue = createCell(product.getTax().toString() + "%", regularFont, white, TextAlignment.CENTER, 0);
         table.addCell(percentageTaxValue);
 
         Cell totalPriceWithoutTax = createCell(product.getValueWithoutTax().toString(), regularFont, white, TextAlignment.RIGHT, 3);

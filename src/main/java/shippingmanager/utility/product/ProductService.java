@@ -18,7 +18,7 @@ public class ProductService {
     public List<Product> getProductWithTax23(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(23))) {
+            if (product.getTax().compareTo(BigDecimal.valueOf(23)) == 0) {
                 resultList.add(product);
             }
 
@@ -29,7 +29,7 @@ public class ProductService {
     public List<Product> getProductWithTax08(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(8))) {
+            if (product.getTax().compareTo(BigDecimal.valueOf(8)) == 0) {
                 resultList.add(product);
             }
 
@@ -40,7 +40,7 @@ public class ProductService {
     public List<Product> getProductWithTax05(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
         for (Product product : products) {
-            if (product.getTax().equals(BigDecimal.valueOf(5))) {
+            if (product.getTax().compareTo(BigDecimal.valueOf(5)) == 0) {
                 resultList.add(product);
             }
 
