@@ -20,4 +20,17 @@ public class BankAccountService {
             bankAccountDao.delete(bankAccount);
         }
     }
+
+    public boolean validateBankAccount(List<BankAccountDto> bankAccounts) {
+        for (BankAccountDto bankAccountDto : bankAccounts) {
+            if (bankAccountDto.getAccountName() == null || bankAccountDto.getAccountName().equals("")) {
+                return false;
+            }
+            if (bankAccountDto.getAccountNumber() == null || bankAccountDto.getAccountNumber().equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

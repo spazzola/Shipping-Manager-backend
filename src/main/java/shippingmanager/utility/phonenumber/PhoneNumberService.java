@@ -22,4 +22,16 @@ public class PhoneNumberService {
         }
     }
 
+    public boolean validatePhoneNumbers(List<PhoneNumberDto> phoneNumbers) {
+        for (PhoneNumberDto phoneNumberDto : phoneNumbers) {
+            if (phoneNumberDto.getNumber() == null || phoneNumberDto.getNumber().equals("")) {
+                return false;
+            }
+            if (phoneNumberDto.getType() == null || phoneNumberDto.getType().equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

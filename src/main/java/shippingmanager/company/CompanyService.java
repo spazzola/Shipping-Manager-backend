@@ -8,8 +8,10 @@ import shippingmanager.utility.address.Address;
 import shippingmanager.utility.address.AddressMapper;
 import shippingmanager.utility.bankaccount.BankAccount;
 import shippingmanager.utility.bankaccount.BankAccountMapper;
+import shippingmanager.utility.bankaccount.BankAccountService;
 import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.phonenumber.PhoneNumberMapper;
+import shippingmanager.utility.phonenumber.PhoneNumberService;
 
 @AllArgsConstructor
 @Service
@@ -18,7 +20,9 @@ public class CompanyService {
     private CompanyDao companyDao;
     private CompanyMapper companyMapper;
     private AddressMapper addressMapper;
+    private PhoneNumberService phoneNumberService;
     private PhoneNumberMapper phoneNumberMapper;
+    private BankAccountService bankAccountService;
     private BankAccountMapper bankAccountMapper;
 
     @Transactional
@@ -109,10 +113,10 @@ public class CompanyService {
         if (companyDto.getAddress() == null) {
             return false;
         }
-        if (companyDto.getPhoneNumbers() == null) {
+        if (companyDto.getPhoneNumbers() == null || !phoneNumberService.validatePhoneNumbers(companyDto.getPhoneNumbers())) {
             return false;
         }
-        if (companyDto.getBankAccounts() == null) {
+        if (companyDto.getBankAccounts() == null || !bankAccountService.validateBankAccount(companyDto.getBankAccounts())) {
             return false;
         }
 
