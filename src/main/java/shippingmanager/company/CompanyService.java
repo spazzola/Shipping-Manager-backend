@@ -23,20 +23,24 @@ public class CompanyService {
 
     @Transactional
     public Company createCompany(CompanyDto companyDto) {
-        final Company company = companyMapper.fromDto(companyDto);
-        if (!checkIfCompanyExist(company)) {
-            company.setMainCompany(false);
+        if (validateCreateCompanyRequest(companyDto)) {
+            final Company company = companyMapper.fromDto(companyDto);
+            if (!checkIfCompanyExist(company)) {
+                company.setMainCompany(false);
 
-            company.getPhoneNumbers().
-                    forEach(phoneNumber -> phoneNumber.setCompany(company));
+                company.getPhoneNumbers().
+                        forEach(phoneNumber -> phoneNumber.setCompany(company));
 
-            company.getBankAccounts().
-                    forEach(bankAccount -> bankAccount.setCompany(company));
+                company.getBankAccounts().
+                        forEach(bankAccount -> bankAccount.setCompany(company));
 
-            return companyDao.save(company);
-        } else {
-            return companyDao.findByCompanyName(company.getCompanyName());
+                return companyDao.save(company);
+            } else {
+                return companyDao.findByCompanyName(company.getCompanyName());
+            }
         }
+        //TODO what if it's not validated? what to return?
+        return null;
     }
 
     @Transactional
@@ -87,6 +91,32 @@ public class CompanyService {
 
     private boolean checkIfCompanyExist(Company company) {
         return companyDao.findByCompanyName(company.getCompanyName()) != null;
+    }
+
+    private boolean validateCreateCompanyRequest(CompanyDto companyDto) {
+        if (companyDto.getCompanyName() == null || companyDto.getCompanyName().equals("")) {
+            return false;
+        }
+        if (companyDto.getNip() == null || companyDto.getNip().equals("")) {
+            return false;
+        }
+        if (companyDto.getRegon() == null || companyDto.getRegon().equals("")) {
+            return false;
+        }
+        if (companyDto.getEmail() == null || companyDto.getEmail().equals("")) {
+            return false;
+        }
+        if (companyDto.getAddress() == null) {
+            return false;
+        }
+        if (companyDto.getPhoneNumbers() == null) {
+            return false;
+        }
+        if (companyDto.getBankAccounts() == null) {
+            return false;
+        }
+
+        return true;
     }
 
 }
