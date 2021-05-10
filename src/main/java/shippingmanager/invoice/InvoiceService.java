@@ -81,35 +81,39 @@ public class InvoiceService {
 
     @Transactional
     public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
-        Company mainCompany = companyDao.findByIsMainCompanyTrue();
-        //Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
-        Company company = companyService.createCompany(createInvoiceRequest.getReceivedBy());
+        if (validateCreateInvoiceRequest(createInvoiceRequest)) {
+            Company mainCompany = companyDao.findByIsMainCompanyTrue();
+            //Company receivedBy = companyMapper.fromDto(createInvoiceRequest.getReceivedBy());
+            Company company = companyService.createCompany(createInvoiceRequest.getReceivedBy());
 
-        List<Product> products = productMapper.fromDto(createInvoiceRequest.getProducts());
-        productService.calculateValues(products);
-        String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
+            List<Product> products = productMapper.fromDto(createInvoiceRequest.getProducts());
+            productService.calculateValues(products);
+            String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
 
-        Invoice invoice = Invoice.builder()
-                .invoiceNumber(invoiceNumber)
-                .issuedIn(createInvoiceRequest.getIssuedIn())
-                .paymentMethod(createInvoiceRequest.getPaymentMethod())
-                .currency(createInvoiceRequest.getCurrency())
-                .daysTillPayment(createInvoiceRequest.getDaysTillPayment())
-                .issuedDate(createInvoiceRequest.getIssuedDate())
-                .issuedBy(mainCompany)
-                .receivedBy(company)
-                .products(products)
-                .paidAmount(createInvoiceRequest.getPaidAmount())
-                .isPaid(createInvoiceRequest.isPaid())
-                .amountToPay(createInvoiceRequest.getAmountToPay())
-                .build();
+            Invoice invoice = Invoice.builder()
+                    .invoiceNumber(invoiceNumber)
+                    .issuedIn(createInvoiceRequest.getIssuedIn())
+                    .paymentMethod(createInvoiceRequest.getPaymentMethod())
+                    .currency(createInvoiceRequest.getCurrency())
+                    .daysTillPayment(createInvoiceRequest.getDaysTillPayment())
+                    .issuedDate(createInvoiceRequest.getIssuedDate())
+                    .issuedBy(mainCompany)
+                    .receivedBy(company)
+                    .products(products)
+                    .paidAmount(createInvoiceRequest.getPaidAmount())
+                    .isPaid(createInvoiceRequest.isPaid())
+                    .amountToPay(createInvoiceRequest.getAmountToPay())
+                    .build();
 
-        setProductsToInvoice(products, invoice);
+            setProductsToInvoice(products, invoice);
 
-        calculateAndSetInvoiceValues(invoice);
-        calculateAndSetAmountToPay(invoice);
+            calculateAndSetInvoiceValues(invoice);
+            calculateAndSetAmountToPay(invoice);
 
-        return invoiceDao.save(invoice);
+            return invoiceDao.save(invoice);
+        }
+
+        return null;
     }
 
     @Transactional
@@ -160,6 +164,30 @@ public class InvoiceService {
                 .orElseThrow(Exception::new);
 
         invoiceDao.delete(invoice);
+    }
+
+    private boolean validateCreateInvoiceRequest(CreateInvoiceRequest createInvoiceRequest) {
+        if (createInvoiceRequest.getIssuedIn() == null || createInvoiceRequest.getIssuedIn().equals("")) {
+            return false;
+        }
+        if (createInvoiceRequest.getPaymentMethod() == null || createInvoiceRequest.getPaymentMethod().equals("")) {
+            return false;
+        }
+        if (createInvoiceRequest.getIssuedDate() == null) {
+            return false;
+        }
+        if (createInvoiceRequest.getCurrency() == null || createInvoiceRequest.getCurrency().equals("")) {
+            return false;
+        }
+        if (createInvoiceRequest.getReceivedBy() == null) {
+            return false;
+        }
+        if (createInvoiceRequest.getProducts() == null) {
+            return false;
+        }
+        //validate products
+
+        return true;
     }
 
     private void setProductsToInvoice(List<Product> products, Invoice invoice) {
