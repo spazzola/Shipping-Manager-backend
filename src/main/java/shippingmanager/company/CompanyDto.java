@@ -22,6 +22,7 @@ public class CompanyDto {
     private String regon;
     private String email;
     private AddressDto address;
+    private boolean isMainCompany;
     private List<PhoneNumberDto> phoneNumbers;
     private List<BankAccountDto> bankAccounts;
 

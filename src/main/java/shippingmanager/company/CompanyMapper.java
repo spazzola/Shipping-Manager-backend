@@ -38,6 +38,7 @@ public class CompanyMapper {
                 .address(addressDto)
                 .phoneNumbers(phoneNumbersDto)
                 .bankAccounts(bankAccountsDto)
+                .isMainCompany(company.isMainCompany())
                 .build();
     }
 
