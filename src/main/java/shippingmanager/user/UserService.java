@@ -38,8 +38,23 @@ public class UserService {
         return userDao.save(user);
     }
 
+    @Transactional
     public List<UserDto> getAll() {
         return userMapper.toDto(userDao.findAll());
+    }
+
+    @Transactional
+    public User getUser(Long id) throws Exception {
+        return userDao.findById(id)
+                .orElseThrow(Exception::new);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) throws Exception {
+        User user = userDao.findById(id)
+                .orElseThrow(Exception::new);
+
+        userDao.delete(user);
     }
 
 }

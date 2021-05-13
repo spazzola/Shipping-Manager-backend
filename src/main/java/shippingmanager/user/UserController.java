@@ -38,10 +38,22 @@ public class UserController {
         return userService.getAll();
     }
 
+    @GetMapping("/getUser")
+    public UserDto getUser(@RequestParam("id") Long id) throws Exception {
+        User user = userService.getUser(id);
+
+        return userMapper.toDto(user);
+    }
+
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody UserDto userDto) throws Exception {
         User user = userService.registerUser(userDto);
         return userMapper.toDto(user);
+    }
+
+    @DeleteMapping("/deleteUser")
+    public void deleteUser(@RequestParam("id") Long id) throws Exception {
+        userService.deleteUser(id);
     }
 
     @PostMapping("/authenticate")
