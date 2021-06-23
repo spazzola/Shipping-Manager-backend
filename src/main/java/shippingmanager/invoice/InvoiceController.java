@@ -2,6 +2,8 @@ package shippingmanager.invoice;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import shippingmanager.pdf.PdfInvoiceService;
 
 import java.io.ByteArrayInputStream;
 
+@Log4j2
 @AllArgsConstructor
 @RestController
 @RequestMapping("/invoice")
@@ -19,18 +22,21 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
     private final PdfInvoiceService pdfInvoiceService;
     private final InvoiceMapper invoiceMapper;
+    private final Logger logger;
 
 
     @PostMapping("/createInvoiceToOrder")
-    public Invoice createInvoiceToOrder(@RequestBody CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {
+    public InvoiceDto createInvoiceToOrder(@RequestBody CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {
+        Invoice invoice = invoiceService.createInvoice(createInvoiceToOrderRequest);
 
-        return invoiceService.createInvoice(createInvoiceToOrderRequest);
+        return invoiceMapper.toDto(invoice);
     }
 
     @PostMapping("createInvoice")
-    public Invoice createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
-        System.out.println(createInvoiceRequest.toString());
-        return invoiceService.createInvoice(createInvoiceRequest);
+    public InvoiceDto createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        Invoice invoice = invoiceService.createInvoice(createInvoiceRequest);
+
+        return invoiceMapper.toDto(invoice);
     }
 
     @PutMapping("/update")
