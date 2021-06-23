@@ -2,8 +2,11 @@ package shippingmanager.utility.driver;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
+@Log4j2
 @AllArgsConstructor
 @RestController
 @RequestMapping("/driver")
@@ -12,10 +15,11 @@ public class DriverController {
 
     private DriverService driverService;
     private DriverMapper driverMapper;
-
+    private final Logger logger;
 
     @PostMapping("/create")
     public DriverDto createDriver(@RequestBody DriverDto driverDto) {
+        logger.info("Dodawanie kierowcy: " + driverDto);
         Driver driver = driverService.createDriver(driverDto);
 
         return driverMapper.toDto(driver);
@@ -23,6 +27,7 @@ public class DriverController {
 
     @PutMapping("/update")
     public DriverDto updateDriver(@RequestBody DriverDto driverDto) throws Exception {
+        logger.info("Aktualizowanie kierowcy: " + driverDto);
         Driver driver = driverService.updateDriver(driverDto);
 
         return driverMapper.toDto(driver);
@@ -44,6 +49,7 @@ public class DriverController {
 
     @DeleteMapping("/deleteDriver")
     public void deleteDriver(@RequestParam("id") Long id) throws Exception {
+        logger.info("Usuwanie kierowcy o id: " + id);
         driverService.deleteDriver(id);
     }
 

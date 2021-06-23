@@ -27,6 +27,7 @@ public class InvoiceController {
 
     @PostMapping("/createInvoiceToOrder")
     public InvoiceDto createInvoiceToOrder(@RequestBody CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {
+        logger.info("Dodawanie faktury do zamówienia: " + createInvoiceToOrderRequest);
         Invoice invoice = invoiceService.createInvoice(createInvoiceToOrderRequest);
 
         return invoiceMapper.toDto(invoice);
@@ -34,6 +35,7 @@ public class InvoiceController {
 
     @PostMapping("createInvoice")
     public InvoiceDto createInvoice(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        logger.info("Dodawanie faktury: " + createInvoiceRequest);
         Invoice invoice = invoiceService.createInvoice(createInvoiceRequest);
 
         return invoiceMapper.toDto(invoice);
@@ -48,6 +50,7 @@ public class InvoiceController {
 
     @GetMapping(value = "/createPdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam("id") Long id) throws Exception {
+        logger.info("Generowanie PDF dla faktury o id: " + id);
         ByteArrayInputStream invoicePdfBytes = pdfInvoiceService.generatePdf(id);
 
         return ResponseEntity
@@ -72,6 +75,7 @@ public class InvoiceController {
 
     @PutMapping("/payForInvoice")
     public InvoiceDto payForInvoice(@RequestParam("id") Long id) throws Exception {
+        logger.info("Płacenie za fakture o id: " + id);
         Invoice invoice = invoiceService.payForInvoice(id);
 
         return invoiceMapper.toDto(invoice);
@@ -79,6 +83,7 @@ public class InvoiceController {
 
     @DeleteMapping("/delete")
     public void deleteInvoice(@RequestParam("id") Long id) throws Exception {
+        logger.info("Usuwanie faktury o id: " + id);
         invoiceService.deleteInvoice(id);
     }
 
