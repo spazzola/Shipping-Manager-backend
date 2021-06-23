@@ -24,6 +24,7 @@ import shippingmanager.utility.orderdriver.OrderDriverService;
 
 import javax.management.BadAttributeValueExpException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -45,7 +46,7 @@ public class OrderService {
         LoadingInformation loadingInformation = loadingInformationMapper.fromDto(createOrderRequest.getLoadingInformation());
         List<Driver> drivers = driverService.createAndSaveDriversIfNotExists(createOrderRequest);
 
-        String orderNumber = generalNumberService.generateNumber(createOrderRequest.getCreatedDate());
+        String orderNumber = createOrderNumber(createOrderRequest.getCreatedDate());
 
         Order order = Order.builder()
                 .createdDate(createOrderRequest.getCreatedDate())
@@ -157,6 +158,17 @@ public class OrderService {
             throw new BadAttributeValueExpException(exceptionMessage);
         }
 
+    }
+
+    private String createOrderNumber(LocalDateTime createdDate) {
+        Optional<Order> order = orderDao.findByMonthAndYear(createdDate.getMonth().getValue(), createdDate.getYear());
+        if (order.isPresent()) {
+            int slashIndex = order.get().getOrderNumber().indexOf("/");
+            int number = Integer.valueOf(order.get().getOrderNumber().substring(0, slashIndex));
+            return generalNumberService.generateNumber(createdDate, number + 1);
+        } else {
+            return generalNumberService.generateNumber(createdDate, 1);
+        }
     }
 
     private boolean isInvalidDate(LocalDateTime localDateTime) {

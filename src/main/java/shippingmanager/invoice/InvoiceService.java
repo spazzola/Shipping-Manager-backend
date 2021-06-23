@@ -13,9 +13,11 @@ import shippingmanager.utility.product.ProductMapper;
 import shippingmanager.utility.product.ProductService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -50,8 +52,10 @@ public class InvoiceService {
         BigDecimal valueWithoutTax = order.getValue();
         BigDecimal valueWithTax = valueWithoutTax.add(valueWithoutTax.multiply(BigDecimal.valueOf(0.23)));
 
+        String invoiceNumber = createInvoiceNumber(createInvoiceToOrderRequest.getIssuedDate());
+
         Invoice invoice = Invoice.builder()
-                .invoiceNumber(order.getOrderNumber())
+                .invoiceNumber(invoiceNumber)
                 .issuedIn(createInvoiceToOrderRequest.getIssuedIn())
                 .issuedDate(createInvoiceToOrderRequest.getIssuedDate())
                 .currency(order.getCurrency())
@@ -88,7 +92,8 @@ public class InvoiceService {
 
             List<Product> products = productMapper.fromDto(createInvoiceRequest.getProducts());
             productService.calculateValues(products);
-            String invoiceNumber = generalNumberService.generateNumber(createInvoiceRequest.getIssuedDate());
+
+            String invoiceNumber = createInvoiceNumber(createInvoiceRequest.getIssuedDate());
 
             Invoice invoice = Invoice.builder()
                     .invoiceNumber(invoiceNumber)
@@ -188,6 +193,17 @@ public class InvoiceService {
         //validate products
 
         return true;
+    }
+
+    private String createInvoiceNumber(LocalDateTime issuedDate) {
+        Optional<Invoice> testInvoice = invoiceDao.findByMonthAndYear(issuedDate.getMonth().getValue(), issuedDate.getYear());
+        if (testInvoice.isPresent()) {
+            int slashIndex = testInvoice.get().getInvoiceNumber().indexOf("/");
+            int number = Integer.valueOf(testInvoice.get().getInvoiceNumber().substring(0, slashIndex));
+            return generalNumberService.generateNumber(issuedDate, number + 1);
+        } else {
+            return generalNumberService.generateNumber(issuedDate, 1);
+        }
     }
 
     private void setProductsToInvoice(List<Product> products, Invoice invoice) {
