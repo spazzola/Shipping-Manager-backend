@@ -50,7 +50,12 @@ public class PdfInvoiceService {
 
     //TODO add to method parameters Long invoiceId
     public ByteArrayInputStream generatePdf(Long id) throws Exception {
-        PdfFontFactory.registerDirectory("src/main/resources/fonts/");
+        //PdfFontFactory.registerDirectory("src/main/resources/fonts/");
+        //String fileName = "fonts/";
+        //ClassLoader classLoader = getClass().getClassLoader().;
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        PdfFontFactory.registerDirectory(classLoader.getResource("fonts/").toString());
 
         Invoice invoice = invoiceDao.findById(id)
                 .orElseThrow(Exception::new);
@@ -109,7 +114,9 @@ public class PdfInvoiceService {
 
     private void addCompanyLogo(Table table) throws IOException {
         Cell cell = new Cell();
-        ImageData imageData = ImageDataFactory.create("src/main/resources/pics/logo.png");
+        //ImageData imageData = ImageDataFactory.create("src/main/resources/pics/logo.png");
+        ClassLoader classLoader = getClass().getClassLoader();
+        ImageData imageData = ImageDataFactory.create(classLoader.getResource("pics/logo.png"));
         Image pdfImage = new Image(imageData);
         cell.setBorder(Border.NO_BORDER);
         cell.add(pdfImage);
