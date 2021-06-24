@@ -2,11 +2,13 @@ package shippingmanager.order;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shippingmanager.company.CompanyController;
 import shippingmanager.pdf.PdfOrderService;
 
 import javax.management.BadAttributeValueExpException;
@@ -14,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Log4j2
-@AllArgsConstructor
 @RestController
 @RequestMapping("/order")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -23,7 +24,13 @@ public class OrderController {
     private final OrderMapper orderMapper;
     private final OrderService orderService;
     private final PdfOrderService pdfOrderService;
-    private final Logger logger;
+    private Logger logger = LogManager.getLogger(OrderController.class);
+
+    public OrderController(OrderMapper orderMapper, OrderService orderService, PdfOrderService pdfOrderService) {
+        this.orderMapper = orderMapper;
+        this.orderService = orderService;
+        this.pdfOrderService = pdfOrderService;
+    }
 
     @PostMapping("/createOrder")
     public OrderDto createOrder(@RequestBody CreateOrderRequest createOrderRequest) throws BadAttributeValueExpException {

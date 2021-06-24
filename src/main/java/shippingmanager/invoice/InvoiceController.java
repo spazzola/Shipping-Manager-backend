@@ -3,17 +3,18 @@ package shippingmanager.invoice;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shippingmanager.company.CompanyController;
 import shippingmanager.pdf.PdfInvoiceService;
 
 import java.io.ByteArrayInputStream;
 
 @Log4j2
-@AllArgsConstructor
 @RestController
 @RequestMapping("/invoice")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -22,8 +23,13 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
     private final PdfInvoiceService pdfInvoiceService;
     private final InvoiceMapper invoiceMapper;
-    private final Logger logger;
+    private Logger logger = LogManager.getLogger(InvoiceController.class);
 
+    public InvoiceController(InvoiceService invoiceService, PdfInvoiceService pdfInvoiceService, InvoiceMapper invoiceMapper) {
+        this.invoiceService = invoiceService;
+        this.pdfInvoiceService = pdfInvoiceService;
+        this.invoiceMapper = invoiceMapper;
+    }
 
     @PostMapping("/createInvoiceToOrder")
     public InvoiceDto createInvoiceToOrder(@RequestBody CreateInvoiceToOrderRequest createInvoiceToOrderRequest) {

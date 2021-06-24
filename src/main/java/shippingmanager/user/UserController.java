@@ -2,6 +2,7 @@ package shippingmanager.user;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,6 @@ import shippingmanager.user.userdetails.MyUserDetailsService;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@AllArgsConstructor
 @Log4j2
 @RestController
 @RequestMapping("/user")
@@ -34,8 +34,16 @@ public class UserController {
     private MyUserDetailsService myUserDetailsService;
     private JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-    private Logger logger;
+    private Logger logger = LogManager.getLogger(UserController.class);
 
+    public UserController(UserService userService, UserMapper userMapper, AuthenticationManager authenticationManager, MyUserDetailsService myUserDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+        this.authenticationManager = authenticationManager;
+        this.myUserDetailsService = myUserDetailsService;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/getAll")
     public List<UserDto> getAll() {
