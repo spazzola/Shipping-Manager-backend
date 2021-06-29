@@ -3,14 +3,11 @@ package shippingmanager.invoice;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import shippingmanager.company.Company;
 import shippingmanager.company.CompanyDto;
-import shippingmanager.utility.product.Product;
 import shippingmanager.utility.product.ProductDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Data

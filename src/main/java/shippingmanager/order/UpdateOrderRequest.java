@@ -2,7 +2,6 @@ package shippingmanager.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import shippingmanager.utility.driver.DriverDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
 import shippingmanager.utility.orderdriver.OrderDriverDto;
 

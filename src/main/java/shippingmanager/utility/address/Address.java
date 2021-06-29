@@ -1,7 +1,6 @@
 package shippingmanager.utility.address;
 
 import lombok.*;
-import shippingmanager.company.Company;
 
 import javax.persistence.*;
 

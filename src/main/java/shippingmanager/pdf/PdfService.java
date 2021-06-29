@@ -45,13 +45,13 @@ public class PdfService {
 
     public void addSignaturesFields(Table table, String field1, String field2) throws IOException {
         table.setFixedPosition(48f, 30f, 500f);
-        createSignatureCell(table, "Podpisz i pieczątka zleceniodawcy");
+        createSignatureCell(table, field1);
 
         Cell emptyCell = new Cell();
         emptyCell.setBorder(Border.NO_BORDER);
         table.addCell(emptyCell);
 
-        createSignatureCell(table, "Podpis i pieczątka zleceniobiorcy");
+        createSignatureCell(table, field2);
     }
 
     private void createSignatureCell(Table table, String text) throws IOException {

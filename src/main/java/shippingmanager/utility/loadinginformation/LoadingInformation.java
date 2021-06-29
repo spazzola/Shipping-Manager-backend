@@ -2,7 +2,6 @@ package shippingmanager.utility.loadinginformation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import shippingmanager.company.Company;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

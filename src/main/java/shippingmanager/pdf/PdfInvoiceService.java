@@ -8,8 +8,6 @@ import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfObject;
-import com.itextpdf.kernel.pdf.PdfOutputStream;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
@@ -33,7 +31,6 @@ import shippingmanager.utility.taxxinfo.TaxInfoService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,8 +48,6 @@ public class PdfInvoiceService {
     //TODO add to method parameters Long invoiceId
     public ByteArrayInputStream generatePdf(Long id) throws Exception {
         //PdfFontFactory.registerDirectory("src/main/resources/fonts/");
-        //String fileName = "fonts/";
-        //ClassLoader classLoader = getClass().getClassLoader().;
 
         ClassLoader classLoader = getClass().getClassLoader();
         PdfFontFactory.registerDirectory(classLoader.getResource("fonts/").toString());
@@ -61,7 +56,6 @@ public class PdfInvoiceService {
                 .orElseThrow(Exception::new);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        //System.out.println(out.size());
         PdfWriter writer = new PdfWriter(out);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
@@ -102,14 +96,7 @@ public class PdfInvoiceService {
         document.close();
         out.close();
 
-        //System.out.println(out.size());
-
         return new ByteArrayInputStream(out.toByteArray());
-    }
-
-    private String generatePdfName(Invoice invoice) {
-        String invoiceNumber = invoice.getInvoiceNumber().replace("/", "-");
-        return "Faktura" + invoiceNumber + ".pdf";
     }
 
     private void addCompanyLogo(Table table) throws IOException {

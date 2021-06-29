@@ -15,7 +15,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shippingmanager.company.CompanyDto;
 import shippingmanager.order.Order;
@@ -24,10 +23,8 @@ import shippingmanager.order.OrderDto;
 import shippingmanager.order.OrderMapper;
 import shippingmanager.utility.address.AddressDto;
 import shippingmanager.utility.loadinginformation.LoadingInformationDto;
-import shippingmanager.utility.orderdriver.OrderDriver;
 import shippingmanager.utility.orderdriver.OrderDriverDto;
 import shippingmanager.utility.phonenumber.PhoneNumberDto;
-import shippingmanager.utility.plate.PlateDto;
 
 
 @AllArgsConstructor

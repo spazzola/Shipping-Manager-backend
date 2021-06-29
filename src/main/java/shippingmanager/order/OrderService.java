@@ -11,7 +11,6 @@ import shippingmanager.company.Company;
 import shippingmanager.company.CompanyDao;
 import shippingmanager.utility.driver.Driver;
 import shippingmanager.utility.driver.DriverDto;
-import shippingmanager.utility.driver.DriverMapper;
 import shippingmanager.utility.driver.DriverService;
 import shippingmanager.utility.generalnumber.GeneralNumberService;
 import shippingmanager.utility.loadinginformation.LoadingInformation;
@@ -33,7 +32,6 @@ public class OrderService {
     private final OrderDao orderDao;
     private final OrderDriverDao orderDriverDao;
     private final DriverService driverService;
-    private final DriverMapper driverMapper;
     private final OrderDriverService orderDriverService;
     private final OrderDriverMapper orderDriverMapper;
     private final CompanyDao companyDao;

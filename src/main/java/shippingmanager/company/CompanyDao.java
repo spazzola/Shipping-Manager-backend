@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyDao extends JpaRepository<Company, Long> {
 
-    Company findByNip(String nip);
     Company findByIsMainCompanyTrue();
     Company findByCompanyName(String companyName);
 

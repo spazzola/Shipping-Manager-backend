@@ -6,7 +6,6 @@ import shippingmanager.company.CompanyDto;
 import shippingmanager.company.CompanyMapper;
 import shippingmanager.order.OrderDto;
 import shippingmanager.order.OrderMapper;
-import shippingmanager.utility.product.Product;
 import shippingmanager.utility.product.ProductDto;
 import shippingmanager.utility.product.ProductMapper;
 

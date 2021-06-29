@@ -16,21 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderDriverMapper {
 
-    private PlateMapper plateMapper;
-    private PhoneNumberMapper phoneNumberMapper;
-
     public OrderDriverDto toDto(OrderDriver orderDriver) {
-//        List<PlateDto> platesDto = plateMapper.toDto(orderDriver.getDriver().getPlates());
-//        List<PhoneNumberDto> phoneNumbersDto = phoneNumberMapper.toDto(orderDriver.getDriver().getPhoneNumbers());
-
-//        DriverDto driverDto = DriverDto.builder()
-//                .id(orderDriver.getDriver().getId())
-//                .name(orderDriver.getDriver().getName())
-//                .surname(orderDriver.getDriver().getSurname())
-//                .plates(platesDto)
-//                .phoneNumbers(phoneNumbersDto)
-//                .build();
-
         return OrderDriverDto.builder()
                 .id(orderDriver.getId())
                 .name(orderDriver.getName())

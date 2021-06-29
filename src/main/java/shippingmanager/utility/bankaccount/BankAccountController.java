@@ -1,7 +1,6 @@
 package shippingmanager.utility.bankaccount;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

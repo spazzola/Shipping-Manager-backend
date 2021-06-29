@@ -28,14 +28,7 @@ public class OrderDriverService {
             orderDriver.setOrder(order);
             orderDrivers.add(orderDriver);
         }
-//        List<OrderDriver> orderDrivers = new ArrayList<>();
-//        for (Driver driver : drivers) {
-//            OrderDriver orderDriver = new OrderDriver();
-//            orderDriver.setDriver(driver);
-//            orderDriver.setOrder(order);
-//            orderDrivers.add(orderDriver);
-//            orderDriverDao.save(orderDriver);
-//        }
+
         return orderDriverDao.saveAll(orderDrivers);
     }
 

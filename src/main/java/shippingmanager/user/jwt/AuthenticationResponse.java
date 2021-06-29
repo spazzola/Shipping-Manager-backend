@@ -1,7 +1,6 @@
 package shippingmanager.user.jwt;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class AuthenticationResponse {

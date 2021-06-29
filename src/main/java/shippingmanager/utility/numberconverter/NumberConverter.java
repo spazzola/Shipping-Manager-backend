@@ -33,7 +33,7 @@ public class NumberConverter {
     private static final String _1e21 = "tryliard";
     private static final String _1e24 = "kwadrylion";
 
-    private static final int secSize = 3; // po 3 cyfry w sekcji
+    private static final int secSize = 3;
 
     public static String speakNumber(long value) {
         StringBuffer buffer = new StringBuffer();
@@ -104,32 +104,20 @@ public class NumberConverter {
         return retval;
     }
 
-    /**
-     * Przeciążona metoda konwertująca. Dodana w celu uproszczenia
-     * rekurencji
-     */
     private static String decode(int number) {
         return decode(String.valueOf(number));
     }
 
-    /**
-     * Metoda określa przyrostki dodawane do poszczególnych trójek
-     * liczb.
-     *
-     * @param number   liczba jako string
-     * @param position pozycja danej trójki
-     * @return napis zawierający prawidłowy przyrostek
-     */
     private static String determineSuffix(String number, int position) {
         String suffix = "";
         if (number.equals("000")) {
             return suffix;
         }
-// pozycja 2 - tysiące, 3 - miliony, 4 - miliardy itd.
+
         switch (position) {
             case 1:
                 return suffix;
-            case 2: // tysiące
+            case 2:
                 if (number.endsWith("1") && (number.length() == 1))
                     suffix = _1000;
                 if (!(number.endsWith("1") && number.length() == 1)) {
@@ -137,34 +125,28 @@ public class NumberConverter {
                     suffix += suffixHelper(number, _1e3suff);
                 }
                 return suffix;
-            case 3: //miliony
+            case 3:
                 suffix = _1e6;
                 break;
-            case 4: //miliardy
+            case 4:
                 suffix = _1e9;
                 break;
-            case 5: //biliony
+            case 5:
                 suffix = _1e12;
                 break;
-            case 6: //biliardy
+            case 6:
                 suffix = _1e15;
                 break;
-            case 7: //tryliony
+            case 7:
                 suffix = _1e18;
                 break;
         }
-// od miliona w górę odmiana regularna
+
         if (!(number.endsWith("1") && number.length() == 1))
             suffix += suffixHelper(number, _1e6suff);
         return suffix;
     }
 
-    /**
-     * Metoda upraszczająca kod dla tworzenia sufisków
-     *
-     * @param number liczba jako string
-     * @return napis zawierający końcówkę
-     */
     private static String suffixHelper(String number, String[] suffixes) {
 
         if (number.equals("")) {

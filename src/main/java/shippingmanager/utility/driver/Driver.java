@@ -1,7 +1,6 @@
 package shippingmanager.utility.driver;
 
 import lombok.*;
-import shippingmanager.utility.orderdriver.OrderDriver;
 import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.plate.Plate;
 
@@ -25,9 +24,6 @@ public class Driver {
     private String name;
 
     private String surname;
-
-//    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
-//    private List<OrderDriver> orderDrivers;
 
     @OneToMany(mappedBy = "driver", cascade=CascadeType.ALL)
     private List<Plate> plates;

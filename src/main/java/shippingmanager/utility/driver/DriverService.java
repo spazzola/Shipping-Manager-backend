@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import shippingmanager.order.CreateOrderRequest;
 import shippingmanager.utility.phonenumber.PhoneNumber;
 import shippingmanager.utility.phonenumber.PhoneNumberMapper;
 import shippingmanager.utility.plate.Plate;
-import shippingmanager.utility.plate.PlateDto;
 import shippingmanager.utility.plate.PlateMapper;
 
 @AllArgsConstructor

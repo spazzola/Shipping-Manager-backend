@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import shippingmanager.company.*;
 import shippingmanager.order.Order;
 import shippingmanager.order.OrderDao;
-import shippingmanager.order.UpdateOrderRequest;
 import shippingmanager.utility.generalnumber.GeneralNumberService;
 import shippingmanager.utility.product.Product;
 import shippingmanager.utility.product.ProductMapper;
@@ -151,6 +150,11 @@ public class InvoiceService {
     @Transactional
     public List<Invoice> getAllInvoices() {
         return invoiceDao.findAll();
+    }
+
+    @Transactional
+    public List<Invoice> getMonthInvoices(int month, int year) {
+        return invoiceDao.getMonthInvoices(month, year);
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package shippingmanager.user;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import shippingmanager.user.jwt.AuthenticationRequest;
@@ -59,7 +57,7 @@ public class UserController {
 
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody UserDto userDto) throws Exception {
-        logger.info("Tworzenie uzytkownika: " + userDto);
+        logger.info("Tworzenie uzytkownika: " + userDto.toString());
         User user = userService.registerUser(userDto);
         return userMapper.toDto(user);
     }

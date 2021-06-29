@@ -1,7 +1,6 @@
 package shippingmanager.utility.plate;
 
 import org.springframework.stereotype.Component;
-import shippingmanager.utility.driver.DriverDto;
 
 import java.util.ArrayList;
 import java.util.List;
