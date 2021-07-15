@@ -17,8 +17,8 @@ public interface OrderDao extends JpaRepository<Order, Long> {
     Optional<Order> findByMonthAndYear(int month, int year);
 
     @Query(value = "SELECT * FROM orders o " +
-            "WHERE MONTH(o.created_date) = ?1 AND YEAR(o.created_date) = ?2",
+            "WHERE MONTH(o.created_Date) = ?1 AND YEAR(o.created_Date) = ?2",
             nativeQuery = true)
-    List<Order> getMonthInvoices(int month, int year);
+    List<Order> getMonthOrders(int month, int year);
 
 }

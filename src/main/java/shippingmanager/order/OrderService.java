@@ -126,6 +126,11 @@ public class OrderService {
         return orderDao.findAll();
     }
 
+    @Transactional
+    public List<Order> getMonthOrders(int month, int year) {
+        return orderDao.getMonthOrders(month, year);
+    }
+
     private void validateOrder(CreateOrderRequest createOrderRequest) throws BadAttributeValueExpException {
         String exceptionMessage = "";
 

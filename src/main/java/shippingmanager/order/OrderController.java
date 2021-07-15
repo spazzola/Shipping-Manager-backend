@@ -63,6 +63,14 @@ public class OrderController {
         return orderMapper.toDto(orders);
     }
 
+    @GetMapping("/getMonthOrders")
+    public List<OrderDto> getMonthOrders(@RequestParam("month") int month, @RequestParam("year") int year) {
+        System.out.println(month + " " + year);
+        List<Order> orders = orderService.getMonthOrders(month, year);
+
+        return orderMapper.toDto(orders);
+    }
+
     @PutMapping("/update")
     public OrderDto updateOrder(@RequestBody UpdateOrderRequest updateOrderRequest) throws Exception {
         logger.info("Aktualizowanie zamowienia: " + updateOrderRequest);
